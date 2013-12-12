@@ -8,8 +8,7 @@ $.fn.timeline = function(json){
   this.getPoints = function(date_string) {
     var parts = date_string.split('-');
     var points = 0;
-    points = 12 * parseInt(parts[0]) + parseInt(parts[1]);
-    console.log(parseInt(points));
+    points = 12 * parseInt(parts[0]) + parseInt(parts[1]) - 1;
     return points;
   }
   this.getMonth = function(points,display_month) {
@@ -44,9 +43,8 @@ $.fn.timeline = function(json){
   var max_point = this.getPoints(json.max_date);
 
   // Calculate scale ratio.
-  var additional = 50; //  months before and after timeline.
+  var additional = 30; //  months before and after timeline.
   var diff = max_point - min_point + additional * 2; 
-  console.info(diff);
   
   var ratio = json.ratio ? json.ratio : 20;
   tl_timescale.css({width: ( diff * ratio )  + 'px'});
