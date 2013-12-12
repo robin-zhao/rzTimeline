@@ -11,3 +11,4 @@
 #arrow-left,#arrow-right{height:180px;width:50px;border:1px red solid;float:left;}
 #tl-body-container{height:180px;width:492px;border: 1px solid yellow;float:left;}
 .tl-body-content{display:none}
+#tl-middle-line{left:300px;border-left:1px solid red;height:100px;width:1px;position:absolute;top:190px;float:left;}

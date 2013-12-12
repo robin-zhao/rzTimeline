@@ -34,6 +34,8 @@ $.fn.timeline = function(json){
   
   var tl_timescale = $('<div id="tl-timescale"></div>');
   var tl_slider = $('<div id="tl-slider"></div>');
+  var tl_middle_line = $('<div id="tl-middle-line"></div>');
+  $(this).append(tl_middle_line);
   $(this).append(tl_body);
   $(this).append(tl_timescale);
   $(this).append(tl_slider);
