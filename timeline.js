@@ -24,6 +24,14 @@ $.fn.timeline = function(json){
   $(this).css({width: json.width + 'px'});
   // Add skeleton divs.
   var tl_body = $('<div id="tl-body"></div>');
+
+  var tl_body_arrow_left = $('<div id="arrow-left"></div>');
+  var tl_body_container = $('<div id="tl-body-container"></div>');
+  var tl_body_arrow_right = $('<div id="arrow-right"></div>');
+  tl_body.append(tl_body_arrow_left)
+         .append(tl_body_container)
+         .append(tl_body_arrow_right);
+  
   var tl_timescale = $('<div id="tl-timescale"></div>');
   var tl_slider = $('<div id="tl-slider"></div>');
   $(this).append(tl_body);
@@ -38,7 +46,7 @@ $.fn.timeline = function(json){
   var diff = max_point - min_point + additional * 2; 
   console.info(diff);
   
-  var ratio = json.ratio ? json.ratio : 10;
+  var ratio = json.ratio ? json.ratio : 20;
   tl_timescale.css({width: ( diff * ratio )  + 'px'});
 
   // Slide the timescale.
@@ -48,11 +56,27 @@ $.fn.timeline = function(json){
     tl_timescale.animate({
       left: moved 
     });
-  }
+  };
   // Load content to top area.
-  this.loadContent = function(){
+  this.loadContent = function(dates){
+    $.each(dates, function(i,n){
 
+      var key = $('.tl-body-content').length;
+
+      var tl_body_content = $('<div class="tl-body-content" key="' + key + '"></div>');
+      tl_body_content.append('<div class="tl-body-content-date">'+ n.date +'</div>');
+      tl_body_content.append('<div class="tl-body-content-title">'+ n.title +'</div>');
+      tl_body_content.append('<div class="tl-body-content-desc">'+ n.desc +'</div>');
+      
+      tl_body_container.append(tl_body_content);
+    });
+  };
+
+  this.focusContent = function() {
+    // Show current content at top area.
+    
   }
+
   // Load timepoints to scale.
   this.loadTimescale = function(){
 
@@ -74,6 +98,7 @@ $.fn.timeline = function(json){
 
   // Insert available date points. 
   $.each(json.points, function(i,n){
+
     var tl_body_container = $('<div class="tl-body-container"></div>');
     var left = ( that.getPoints(n.date) - min_point + additional) * ratio; 
 
@@ -81,7 +106,8 @@ $.fn.timeline = function(json){
       tl_timescale.css({left: (-left+$(that).width()/2) + 'px'});
     }
 
-    var tl_timescale_container = $('<div class="tl-timescale-container"></div>');
+    var key = $('.tl-timescale-container').length;
+    var tl_timescale_container = $('<div class="tl-timescale-container" key="' + key + '"></div>');
     tl_timescale_container.append('<span title="'+ n.title +'">' + n.date + '</span>');
     tl_timescale_container.css({left: left + 'px'});
     tl_timescale.append(tl_timescale_container);
@@ -93,6 +119,11 @@ $.fn.timeline = function(json){
     var current_left = parseInt(tl_timescale.css('left'));
     var target_left = - (parseInt($(this).parent().css('left')) - $(that).width() / 2);
     that.slideTo(current_left, target_left); 
+
+    var key = parseInt($(this).parent().attr('key')) + 1; 
+    $('#tl-body-container .tl-body-content').hide(); 
+    $('#tl-body-container .tl-body-content:nth-child(' + key + ')').css({'display':'block'});
+
   });
 
   // Make timeline draggable.
@@ -118,6 +149,9 @@ $.fn.timeline = function(json){
       that.slideTo( parseInt(tl_timescale.css('left')), -new_left);
     }
   });
+
+  this.loadContent(json.points);
+
   // Slider bar represents one widget width ratio.
   //$(".ui-slider .ui-slider-handle").css({width: ($(that).width() * $(that).width() / tl_timescale.width() ) + 'px'});
 
