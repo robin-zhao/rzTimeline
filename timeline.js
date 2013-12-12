@@ -46,17 +46,25 @@ $.fn.timeline = function(json){
   var additional = 30; //  months before and after timeline.
   var diff = max_point - min_point + additional * 2; 
   
-  var ratio = json.ratio ? json.ratio : 20;
+  var ratio = json.ratio ? json.ratio : 40;
   tl_timescale.css({width: ( diff * ratio )  + 'px'});
 
   // Slide the timescale.
-  this.slideTo = function(current_left, target_left) {
+  this.moveTimeScale = function(target_left) {
+    var current_left = parseInt(tl_timescale.css('left'));
     var moved = target_left - current_left;
     moved = (moved > 0 ? "+=" : "-=") + Math.abs(moved);
     tl_timescale.animate({
       left: moved 
     });
   };
+
+  this.moveSlider = function(target_left) {
+    var slide_ratio = Math.abs(target_left) / tl_timescale.width();
+    console.log(slide_ratio);
+    $("#tl-slider .ui-slider-handle").css({left: (slide_ratio * 100) + '%'}); 
+  }
+
   // Load content to top area.
   this.loadContent = function(dates){
     $.each(dates, function(i,n){
@@ -72,7 +80,7 @@ $.fn.timeline = function(json){
     });
   };
 
-  this.focusContent = function() {
+  this.focusContent = function(date) {
     // Show current content at top area.
     
   }
@@ -85,9 +93,14 @@ $.fn.timeline = function(json){
   // Draw scale lines.
   var current_scale = null;
   var scale_point = 0;
+  var start_month = null;
   for(var i=0; i<diff; i++){
     scale_point = min_point - additional + i;
     current_scale = $('<div class="scale"></div>');
+    if(i === 0){
+      start_month = this.getMonth(scale_point, true);
+      console.log(start_month);
+    }
     current_scale.append('<span>' + this.getMonth(scale_point,false) + '</span>');
     current_scale.css({left: i*ratio +'px'});
     if( scale_point % 12 === 0){
@@ -116,9 +129,8 @@ $.fn.timeline = function(json){
 
   $(".tl-timescale-container span").tooltip();
   $(".tl-timescale-container span").bind('click', function(){
-    var current_left = parseInt(tl_timescale.css('left'));
     var target_left = - (parseInt($(this).parent().css('left')) - $(that).width() / 2);
-    that.slideTo(current_left, target_left); 
+    that.moveTimeScale(target_left); 
 
     var key = parseInt($(this).parent().attr('key')) + 1; 
     $('#tl-body-container .tl-body-content').hide(); 
@@ -130,12 +142,15 @@ $.fn.timeline = function(json){
   tl_timescale.draggable({
     axis:"x",
     stop: function(event, ui){
+      console.info(ui.position.left);
+      var final_left = ui.position.left;
       var right = $(this).width() - $(that).width() + ui.position.left;
       if( ui.position.left > $(that).width()/2 - additional * ratio){
         $(this).animate({left: "-=" + (ui.position.left - $(that).width()/2 + additional * ratio) }); 
       }else if(right < 0){
         $(this).animate({left: "+=" + (-right)}); 
       }
+      that.moveSlider(final_left);
     }
   }); 
 
@@ -146,7 +161,7 @@ $.fn.timeline = function(json){
     stop: function(event,ui){
       var slider_ratio = ui.value / (diff + additional * 2) ;
       var new_left = slider_ratio * tl_timescale.width() - $(that).width() / 2;
-      that.slideTo( parseInt(tl_timescale.css('left')), -new_left);
+      that.moveTimeScale( -new_left);
     }
   });
 
