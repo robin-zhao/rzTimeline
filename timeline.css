@@ -1,0 +1,9 @@
+#my-timeline{height:300px;border:1px solid #000;overflow-y:hidden;overflow:hidden;}
+#tl-body{height:180px;border:1px solid #000;}
+#tl-timescale{height:35px;margin-top:60px;border-top:1px solid #000;}
+.tl-timescale-container{width:5px;height:5px;background-color:#000;float:left;position:absolute;}
+.tl-timescale-container span{left:-14px;top:-20px;position:absolute;border:1px solid blue;}
+.scale{height:3px;width:1px;border-left:1px solid #000;position:absolute;font-size:0px;}
+.scale-decade{height:10px;font-size:12px;font-weight:bold;}
+.scale-decade span{position:absolute;left:-12px;top:12px;}
+#tl-slider{height:10px;border:1pxx solid #000}

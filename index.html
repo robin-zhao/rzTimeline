@@ -1,0 +1,52 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/1999/xhtml">
+<html>
+  <head>
+    <script src="jquery-1.10.2.js"></script>
+    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="timeline.js"></script>
+
+    <script language="javascript">
+      $(document).ready(function(){
+        var json = {
+          min_date:1906,
+          max_date:2001,
+          width: 600,
+          points:[
+          {date:'1906',title:'Lorem Ipsum 0', desc: 'A very long description here.' },
+          {date:'1910',title:'Lorem Ipsum 1', desc: 'A very long description here.' },
+          {date:'1913',title:'Lorem Ipsum 2', desc: 'A very long description here.' },
+          {date:'1925',title:'Lorem Ipsum 3', desc: 'A very long description here.' },
+          {date:'1960',title:'Lorem Ipsum 4', desc: 'A very long description here.' },
+          {date:'1970',title:'Lorem Ipsum 5', desc: 'A very long description here.' },
+          ],
+          focus:0
+        };
+
+        var json2 = [
+        {date:'1976',title:'Lorem Ipsum 6', desc: 'A very long description here.' },
+        {date:'1980',title:'Lorem Ipsum 7', desc: 'A very long description here.' },
+        {date:'1993',title:'Lorem Ipsum 8', desc: 'A very long description here.' },
+        {date:'1995',title:'Lorem Ipsum 9', desc: 'A very long description here.' },
+        {date:'2003',title:'Lorem Ipsum q', desc: 'A very long description here.' },
+        {date:'2010',title:'Lorem Ipsum w', desc: 'A very long description here.' },
+        ];
+
+
+        $("#my-timeline").timeline(json);
+
+      });
+    </script>
+    <link href="timeline.css" rel="stylesheet" type="text/css" />
+    <link href="jquery-ui.css" rel="stylesheet" type="text/css" />
+  </head>
+  <body>
+    <div id="my-timeline"></div>
+
+    <ol>
+      <li>display certain points at startup.</li>
+      <li>load more timepoints on dragging timeline</li>
+      <li>add a slider at bottom?</li>
+      <li></li>
+    </ol>
+  </body>
+</html>
