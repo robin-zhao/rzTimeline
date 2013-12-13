@@ -75,10 +75,10 @@
       $.each(dates, function(i,n){
         var key = $('.tl-body-content').length;
         var tl_body_content = $('<div class="tl-body-content" key="' + key + '"></div>');
-        tl_body_content.append('<div class="tl-body-content-date">'+ n.date +'</div>');
-        tl_body_content.append('<div class="tl-body-content-title">'+ n.title +'</div>');
-        tl_body_content.append('<div class="tl-body-content-desc">'+ n.desc +'</div>');
-        
+        tl_body_content.append('<div class="tl-body-content-thumbnail"><img src="'+ n.thumbnail +'" /></div>');
+        tl_body_content.append('<div class="tl-body-content-right-col"><div class="tl-body-content-date">'+ n.date +'</div>'
+          +'<div class="tl-body-content-title"><a href="' + n.link + '">'+ n.title +'</a></div>'
+          +'<div class="tl-body-content-desc">'+ n.desc +'</div></div>');
         tl_body_container.append(tl_body_content);
       });
     };

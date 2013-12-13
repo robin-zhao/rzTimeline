@@ -8,7 +8,8 @@
 
 #tl-body {
   height: 180px;
-  border: 1px solid #000;
+  border-bottom: 1px solid #bbb;
+  box-shadow: 0px 0px 2px #999;
 }
 
 #tl-timescale {
@@ -74,8 +75,6 @@
 .tl-body-container {
   padding: 0 36px;
   height: 180px;
-  border: 1px solid yellow;
-  background:#EEE;
 }
 
 .tl-body-content {
@@ -102,6 +101,10 @@
   top: 40px;
 }
 
+.timeline-box {
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
 .timeline-box .btn-prev {
   /*Todo: replace*/
   background: url(http://placehold.it/28x80&text=prev);
@@ -112,4 +115,39 @@
   /*Todo: replace*/
   background: url(http://placehold.it/28x80&text=next);
   right: 6px;
+}
+
+.timeline-box .tl-body-content-thumbnail {
+  float: left;
+  font-size: 0px;
+  width: 100px;
+  border: 1px solid #EEE;
+}
+
+.timeline-box .tl-body-content-right-col {
+  float: left;
+  padding-left:6px;
+}
+
+.timeline-box .tl-body-content-date {
+  font-size: 11px;
+  color: #999;
+}
+.timeline-box .tl-body-content-title {
+  padding: 5px 0;
+  font-size: 16px;
+}
+
+.timeline-box .tl-body-content-title a {
+  color: #36B;
+}
+
+.timeline-box .tl-body-content-desc {
+  font-size: 12px;
+  color: #333;
+}
+
+.timeline-box .tl-body-content-thumbnail img {
+  width: 100px;
+  height: 75px;
 }
