@@ -89,7 +89,8 @@
         var left = ( that.getPoints(n.date) - min_point + additional) * ratio; 
         var key = $('.tl-timescale-container').length;
         var tl_timescale_container = $('<div class="tl-timescale-container" key="' + key + '"></div>');
-        tl_timescale_container.append('<span title="'+ n.title +'">' + n.date + '</span>');
+        var span_row = key % 3;
+        tl_timescale_container.append('<span class="span-row-' + span_row + '" title="'+ n.title +'">' + n.date + '</span>');
         tl_timescale_container.css({left: left + 'px'});
         tl_timescale.append(tl_timescale_container);
       });

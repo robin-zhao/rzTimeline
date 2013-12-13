@@ -29,11 +29,22 @@
 
 .tl-timescale-container span {
   left: 0px;
-  top: -20px;
   position: absolute;
   border: 1px solid blue;
   font-size: 11px;
   width: 60px;
+}
+
+.tl-timescale-container span.span-row-0 {
+  top: -20px;
+}
+
+.tl-timescale-container span.span-row-1 {
+  top: -40px;
+}
+
+.tl-timescale-container span.span-row-2 {
+  top: -60px;
 }
 
 .scale {
