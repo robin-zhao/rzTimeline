@@ -108,18 +108,15 @@ $.fn.timeline = function(json){
     $('#tl-body-container .tl-body-content:nth-child(' + (key + 1) + ')').css({'display':'block'});
     // adjust slider.
     that.moveSlider(target_left);
+
   }
 
   // Draw scale lines.
   var current_scale = null;
   var scale_point = 0;
-  var start_month = null;
   for(var i=0; i<diff; i++){
     scale_point = min_point - additional + i;
     current_scale = $('<div class="scale"></div>');
-    if(i === 0){
-      start_month = this.getMonth(scale_point, true);
-    }
     current_scale.append('<span>' + this.getMonth(scale_point,false) + '</span>');
     current_scale.css({left: i*ratio +'px'});
     if( scale_point % 12 === 0){
@@ -128,15 +125,47 @@ $.fn.timeline = function(json){
     tl_timescale.append(current_scale);
   }
 
+
+  var loaded_year = [];
+
+  // Load more time points. 
+  this.loadMore = function(left) {
+    // formula: W / (max -min + 2a ) == (-init_left + w/2) / a
+    var init_left = $(that).width() / 2  - additional * tl_timescale.width() / (max_point - min_point + 2 * additional);
+    // formula: (-init_left + w/2) / a == (- new_left + w/2) / (new_point - min_point + a)
+    var new_point = (-left + $(that).width()/ 2) * additional / (-init_left + $(that).width() / 2) + min_point - additional; 
+    var screen_year = this.getMonth(new_point, false);
+    console.log(screen_year);
+    if( -1 !== $.inArray(screen_year, loaded_year) ) {
+      return;
+    }    
+ 
+    $.ajax({
+      url: 'fixture.json',
+      type: 'POST',
+      data: { date: screen_year },
+    }).done(function(data){
+      console.log(data);
+      that.loadContent(data);
+      that.loadTimescale(data);
+      that.bindEvents();
+      loaded_year.push(screen_year);
+    });
+    
+  }
+  // Bind the events after new timepoints are loaded.
+  this.bindEvents = function() {
+    $(".tl-timescale-container span").tooltip();
+    $(".tl-timescale-container span").bind('click', function(){
+      var key = parseInt($(this).parent().attr('key')); 
+      that.focusContent(key);
+    });
+  }
+
   this.loadTimescale(json.points);
   this.loadContent(json.points);
+  this.bindEvents();
   this.focusContent(0);
-
-  $(".tl-timescale-container span").tooltip();
-  $(".tl-timescale-container span").bind('click', function(){
-    var key = parseInt($(this).parent().attr('key')); 
-    that.focusContent(key);
-  });
 
   // Make timeline draggable.
   tl_timescale.draggable({
@@ -150,6 +179,7 @@ $.fn.timeline = function(json){
         $(this).animate({left: "+=" + (-right)}); 
       }
       that.moveSlider(final_left);
+      that.loadMore(final_left);
     }
   }); 
 
@@ -161,6 +191,7 @@ $.fn.timeline = function(json){
       var slider_ratio = ui.value / (diff + additional * 2) ;
       var new_left = slider_ratio * tl_timescale.width() - $(that).width() / 2;
       that.moveTimeScale( -new_left);
+      that.loadMore(-new_left);
     }
   });
 
