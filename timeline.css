@@ -6,7 +6,7 @@
 .scale{height:4px;width:1px;border-left:1px solid #000;position:absolute;font-size:0px;}
 .scale-decade{height:10px;font-size:12px;font-weight:bold;}
 .scale-decade span{position:absolute;left:-12px;top:12px;}
-#tl-slider{height:10px;border:1pxx solid #000}
+#tl-slider{height:10px;border:1px solid #000}
 .done{color:green}
 #arrow-left,#arrow-right{height:180px;width:50px;border:1px red solid;float:left;}
 #tl-body-container{height:180px;width:492px;border: 1px solid yellow;float:left;}
