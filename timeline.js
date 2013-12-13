@@ -85,6 +85,7 @@
   
     // Load timepoints to scale.
     this.loadTimescale = function(dates){
+      console.log(dates);
       $.each(dates, function(i,n) {
         var left = ( that.getPoints(n.date) - min_point + additional) * ratio; 
         var key = $('.tl-timescale-container').length;
@@ -130,15 +131,21 @@
   
     // Load more time points. 
     this.loadMore = function(left) {
-      // formula: W / (max -min + 2a ) == (-init_left + w/2) / a
-      var init_left = $(that).width() / 2  - additional * tl_timescale.width() / (max_point - min_point + 2 * additional);
-      // formula: (-init_left + w/2) / a == (- new_left + w/2) / (new_point - min_point + a)
-      var new_point = (-left + $(that).width()/ 2) * additional / (-init_left + $(that).width() / 2) + min_point - additional; 
-      var screen_year = this.getMonth(new_point, false);
+      var screen_year = null;
+      if(left === false) {
+        screen_year = this.getMonth(min_point, false);
+        console.log(min_point);
+      }else{
+        // formula: W / (max -min + 2a ) == (-init_left + w/2) / a
+        var init_left = $(that).width() / 2  - additional * tl_timescale.width() / (max_point - min_point + 2 * additional);
+        // formula: (-init_left + w/2) / a == (- new_left + w/2) / (new_point - min_point + a)
+        var new_point = (-left + $(that).width()/ 2) * additional / (-init_left + $(that).width() / 2) + min_point - additional; 
+        screen_year = this.getMonth(new_point, false);
+      }
       console.log(screen_year);
       if( -1 !== $.inArray(screen_year, loaded_year) ) {
         return;
-      }    
+      }
    
       $.ajax({
         url: 'fixture.json',
@@ -148,8 +155,12 @@
         console.log(data);
         that.loadContent(data);
         that.loadTimescale(data);
+        // Prevent duplicate event. @todo
         that.bindEvents();
         loaded_year.push(screen_year);
+         if( left === false ) {
+           that.focusContent(0);
+         }
       });
       
     };
@@ -162,10 +173,7 @@
       });
     };
   
-    this.loadTimescale(json.points);
-    this.loadContent(json.points);
-    this.bindEvents();
-    this.focusContent(0);
+    this.loadMore(false);
   
     // Make timeline draggable.
     tl_timescale.draggable({

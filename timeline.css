@@ -1,6 +1,6 @@
 #my-timeline{height:300px;border:1px solid #000;overflow-y:hidden;overflow:hidden;position:relative;}
 #tl-body{height:180px;border:1px solid #000;}
-#tl-timescale{height:35px;margin-top:60px;border-top:1px solid #000;}
+#tl-timescale{height:35px;margin-top:60px;border-top:1px solid #000;background-color:#eee;}
 .tl-timescale-container{width:5px;height:5px;background-color:#000;float:left;position:absolute;}
 .tl-timescale-container span{left:0px;top:-20px;position:absolute;border:1px solid blue;font-size:11px;width:60px;}
 .scale{height:4px;width:1px;border-left:1px solid #000;position:absolute;font-size:0px;}
