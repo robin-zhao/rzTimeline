@@ -85,7 +85,6 @@
   
     // Load timepoints to scale.
     this.loadTimescale = function(dates){
-      console.log(dates);
       $.each(dates, function(i,n) {
         var left = ( that.getPoints(n.date) - min_point + additional) * ratio; 
         var key = $('.tl-timescale-container').length;
@@ -184,7 +183,6 @@
         var new_point = (-left + $(that).width()/ 2) * additional / (-init_left + $(that).width() / 2) + min_point - additional; 
         screen_year = this.getMonth(new_point, false);
       }
-      console.log(screen_year);
       if( -1 !== $.inArray(screen_year, loaded_year) ) {
         return;
       }
@@ -194,9 +192,16 @@
         type: 'POST',
         data: { date: screen_year }
       }).done(function(data){
-        console.log(data);
-        that.loadContent(data);
-        that.loadTimescale(data);
+        var load_data = [];
+        $.each(data, function(i, n) {
+          var parts = n.date.split('-');
+          if( screen_year == parts[0] ) {
+            load_data.push(n);
+          }
+        }); 
+
+        that.loadContent(load_data);
+        that.loadTimescale(load_data);
         // Prevent duplicate event. @todo
         that.bindEvents();
         loaded_year.push(screen_year);
