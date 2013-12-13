@@ -24,11 +24,11 @@
     // Set width.
     $(this).css({width: json.width + 'px'});
     // Add skeleton divs.
-    var tl_body = $('<div id="tl-body"></div>');
+    var tl_body = $('<div id="tl-body" class="timeline-box"></div>');
   
-    var tl_body_arrow_left = $('<div id="arrow-left"></div>');
-    var tl_body_container = $('<div id="tl-body-container"></div>');
-    var tl_body_arrow_right = $('<div id="arrow-right"></div>');
+    var tl_body_arrow_left = $('<div class="btn-prev"></div>');
+    var tl_body_container = $('<div class="tl-body-container"></div>');
+    var tl_body_arrow_right = $('<div class="btn-next"></div>');
     tl_body.append(tl_body_arrow_left)
            .append(tl_body_container)
            .append(tl_body_arrow_right);
@@ -150,7 +150,7 @@
       $.ajax({
         url: 'fixture.json',
         type: 'POST',
-        data: { date: screen_year },
+        data: { date: screen_year }
       }).done(function(data){
         console.log(data);
         that.loadContent(data);

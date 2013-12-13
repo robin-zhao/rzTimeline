@@ -91,3 +91,8 @@
   top: 180px;
   float: left;
 }
+
+.timeline-box .btn-prev, .timeline-box .btn-next {
+  width: 28px;
+  height: 80px;
+}
