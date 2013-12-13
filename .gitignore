@@ -1,1 +1,17 @@
 .project
+
+#eclipse
+/.buildpath
+/.project
+/.settings
+
+#NetBeans
+/nbproject/private/
+nbproject/*
+
+#PHPStorm
+.idea/
+
+#CTags
+.tags
+
