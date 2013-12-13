@@ -2,27 +2,24 @@
 <html>
   <head>
     <script src="jquery-1.10.2.js"></script>
-    <script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+    <script src="jquery-ui-1.10.3.js"></script>
     <script src="timeline.js"></script>
+    <link href="timeline.css" rel="stylesheet" type="text/css" />
+    <link href="jquery-ui.css" rel="stylesheet" type="text/css" />
 
     <script language="javascript">
       $(document).ready(function(){
-        var json = {
+        $("#my-timeline").timeline({
           min_date:'1906-01-02',
           max_date:'2001-11-05',
           width: 600,
-        };
-
-        $("#my-timeline").timeline(json);
-
+        });
       });
     </script>
-    <link href="timeline.css" rel="stylesheet" type="text/css" />
-    <link href="jquery-ui.css" rel="stylesheet" type="text/css" />
   </head>
   <body>
     <div id="my-timeline"></div>
-
+    <h6>Todo list ( green means fixed )</h6>
     <ol>
       <li class="done">display certain points at startup.</li>
       <li class="done">add a slider at bottom</li>
@@ -36,6 +33,9 @@
       <li>Slider shall not slide out of min to max time point area</li>
       <li class="done">get current date in screen scope</li>
       <li>Time point entry shall not overlap each other.</li>
+      <li>Time point should be render at day base, not month base in timescale.</li>
+      <li>A loading... mechnism should be added when loading data through ajax.</li>
+      <li>Under timescale should show month label: Feb, Mar, Apr, ...</li>
     </ol>
   </body>
 </html>
