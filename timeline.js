@@ -125,6 +125,9 @@ $.fn.timeline = function(json){
     tl_timescale.append(current_scale);
   }
 
+
+  var loaded_year = [];
+
   // Load more time points. 
   this.loadMore = function(left) {
     // formula: W / (max -min + 2a ) == (-init_left + w/2) / a
@@ -133,9 +136,24 @@ $.fn.timeline = function(json){
     var new_point = (-left + $(that).width()/ 2) * additional / (-init_left + $(that).width() / 2) + min_point - additional; 
     var screen_year = this.getMonth(new_point, false);
     console.log(screen_year);
+    if( -1 !== $.inArray(screen_year, loaded_year) ) {
+      return;
+    }    
+ 
+    $.ajax({
+      url: 'fixture.json',
+      type: 'POST',
+      data: { date: screen_year },
+    }).done(function(data){
+      console.log(data);
+      that.loadContent(data);
+      that.loadTimescale(data);
+      that.bindEvents();
+      loaded_year.push(screen_year);
+    });
     
   }
-
+  // Bind the events after new timepoints are loaded.
   this.bindEvents = function() {
     $(".tl-timescale-container span").tooltip();
     $(".tl-timescale-container span").bind('click', function(){
@@ -146,8 +164,8 @@ $.fn.timeline = function(json){
 
   this.loadTimescale(json.points);
   this.loadContent(json.points);
-  this.focusContent(0);
   this.bindEvents();
+  this.focusContent(0);
 
   // Make timeline draggable.
   tl_timescale.draggable({

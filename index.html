@@ -8,29 +8,19 @@
     <script language="javascript">
       $(document).ready(function(){
         var json = {
-          min_date:'1906-05-11',
+          min_date:'1906-01-02',
           max_date:'2001-11-05',
           width: 600,
           points:[
+          {date:'1906-01-02',title:'Lorem Ipsum 4', desc: 'A very long description here.' },
           {date:'1906-05-11',title:'Lorem Ipsum 0', desc: 'A very long description here.' },
-          {date:'1910-02-03',title:'Lorem Ipsum 1', desc: 'A very long description here.' },
-          {date:'1913-11-12',title:'Lorem Ipsum 2', desc: 'A very long description here.' },
-          {date:'1925-05-11',title:'Lorem Ipsum 3', desc: 'A very long description here.' },
-          {date:'1960-01-02',title:'Lorem Ipsum 4', desc: 'A very long description here.' },
-          {date:'1970-03-04',title:'Lorem Ipsum 5', desc: 'A very long description here.' },
+          {date:'1906-02-03',title:'Lorem Ipsum 1', desc: 'A very long description here.' },
+          {date:'1906-11-12',title:'Lorem Ipsum 2', desc: 'A very long description here.' },
+          {date:'1906-05-11',title:'Lorem Ipsum 3', desc: 'A very long description here.' },
+          {date:'1906-03-04',title:'Lorem Ipsum 5', desc: 'A very long description here.' },
           ],
           focus:0
         };
-
-        var json2 = [
-        {date:'1976-11-11',title:'Lorem Ipsum 6', desc: 'A very long description here.' },
-        {date:'1980-12-12',title:'Lorem Ipsum 7', desc: 'A very long description here.' },
-        {date:'1993-01-05',title:'Lorem Ipsum 8', desc: 'A very long description here.' },
-        {date:'1995-05-01',title:'Lorem Ipsum 9', desc: 'A very long description here.' },
-        {date:'2003-04-04',title:'Lorem Ipsum q', desc: 'A very long description here.' },
-        {date:'2010-05-04',title:'Lorem Ipsum w', desc: 'A very long description here.' },
-        ];
-
 
         $("#my-timeline").timeline(json);
 
