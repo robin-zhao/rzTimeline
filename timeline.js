@@ -190,7 +190,8 @@
       $.ajax({
         url: 'fixture.json',
         type: 'POST',
-        data: { date: screen_year }
+        data: { date: screen_year },
+        dataType: 'json'
       }).done(function(data){
         var load_data = [];
         $.each(data, function(i, n) {
