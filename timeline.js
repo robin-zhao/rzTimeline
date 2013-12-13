@@ -61,7 +61,6 @@ $.fn.timeline = function(json){
 
   this.moveSlider = function(target_left) {
     var slide_ratio = Math.abs(target_left) / tl_timescale.width();
-    console.log(slide_ratio);
     $("#tl-slider .ui-slider-handle").css({left: (slide_ratio * 100) + '%'}); 
   }
 
@@ -80,9 +79,22 @@ $.fn.timeline = function(json){
     });
   };
 
-  this.focusContent = function(date) {
-    // Show current content at top area.
-    
+  this.focusContent = function(key) {
+    if(key === false) {
+      key = 0;  
+    } 
+
+    var point_left = $('.tl-timescale-container[key="' + key + '"]').css('left');
+    var target_left = - (parseInt(point_left) - $(that).width() / 2);
+    // adjust timescale.
+    that.moveTimeScale(target_left); 
+
+    // Show current time point detail in top area.
+    $('#tl-body-container .tl-body-content').hide(); 
+    $('#tl-body-container .tl-body-content:nth-child(' + (key + 1) + ')').css({'display':'block'});
+    // adjust slider.
+    that.moveSlider(target_left);
+
   }
 
   // Load timepoints to scale.
@@ -99,7 +111,6 @@ $.fn.timeline = function(json){
     current_scale = $('<div class="scale"></div>');
     if(i === 0){
       start_month = this.getMonth(scale_point, true);
-      console.log(start_month);
     }
     current_scale.append('<span>' + this.getMonth(scale_point,false) + '</span>');
     current_scale.css({left: i*ratio +'px'});
@@ -129,20 +140,15 @@ $.fn.timeline = function(json){
 
   $(".tl-timescale-container span").tooltip();
   $(".tl-timescale-container span").bind('click', function(){
-    var target_left = - (parseInt($(this).parent().css('left')) - $(that).width() / 2);
-    that.moveTimeScale(target_left); 
 
-    var key = parseInt($(this).parent().attr('key')) + 1; 
-    $('#tl-body-container .tl-body-content').hide(); 
-    $('#tl-body-container .tl-body-content:nth-child(' + key + ')').css({'display':'block'});
-
+    var key = parseInt($(this).parent().attr('key')); 
+    that.focusContent(key);
   });
 
   // Make timeline draggable.
   tl_timescale.draggable({
     axis:"x",
     stop: function(event, ui){
-      console.info(ui.position.left);
       var final_left = ui.position.left;
       var right = $(this).width() - $(that).width() + ui.position.left;
       if( ui.position.left > $(that).width()/2 - additional * ratio){
@@ -166,6 +172,7 @@ $.fn.timeline = function(json){
   });
 
   this.loadContent(json.points);
+  this.focusContent(false);
 
   // Slider bar represents one widget width ratio.
   //$(".ui-slider .ui-slider-handle").css({width: ($(that).width() * $(that).width() / tl_timescale.width() ) + 'px'});
