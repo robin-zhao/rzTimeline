@@ -26,12 +26,12 @@
     // Add skeleton divs.
     var tl_body = $('<div id="tl-body" class="timeline-box"></div>');
   
-    var tl_body_arrow_left = $('<div class="btn-prev"></div>');
+    var btn_prev = $('<div class="btn-prev"></div>');
     var tl_body_container = $('<div class="tl-body-container"></div>');
-    var tl_body_arrow_right = $('<div class="btn-next"></div>');
-    tl_body.append(tl_body_arrow_left)
+    var btn_next = $('<div class="btn-next"></div>');
+    tl_body.append(btn_prev)
            .append(tl_body_container)
-           .append(tl_body_arrow_right);
+           .append(btn_next);
     
     var tl_timescale = $('<div id="tl-timescale"></div>');
     var tl_slider = $('<div id="tl-slider"></div>');
@@ -97,19 +97,61 @@
   
     // Focus to a specific time point, provied by key value.
     this.focusContent = function(key) {
-  
-      var point_left = $('.tl-timescale-container[key="' + key + '"]').css('left');
-      var target_left = - (parseInt(point_left) - $(that).width() / 2);
-      // adjust timescale.
-      that.moveTimeScale(target_left); 
-  
-      // Show current time point detail in top area.
-      $('#tl-body-container .tl-body-content').hide(); 
-      $('#tl-body-container .tl-body-content:nth-child(' + (key + 1) + ')').css({'display':'block'});
-      // adjust slider.
-      that.moveSlider(target_left);
-  
+      var max_key = this.getKeyCount()-1;
+      if (key < 0 || key > max_key) {
+        ;
+      }
+      else {
+        if (key == 0) {
+          btn_prev.fadeOut();
+        }
+        else if (key == max_key) {
+          btn_next.fadeOut();
+        }
+        else {
+          btn_prev.fadeIn();
+          btn_next.fadeIn();
+        }
+        var point_left = $('.tl-timescale-container[key="' + key + '"]').css('left');
+        var target_left = - (parseInt(point_left) - $(that).width() / 2);
+        // adjust timescale.
+        that.moveTimeScale(target_left); 
+    
+        // Show current time point detail in top area.
+        tl_body_container.find('.tl-body-content').hide(); 
+        tl_body_container.find('.tl-body-content:nth-child(' + (key + 1) + ')').show();
+        // adjust slider.
+        that.moveSlider(target_left);
+        tl_body_container.attr('ref', key);
+      }
     };
+    
+    // Get which key frame is showing in the detail box.
+    this.getCurrentKey = function() {
+      return parseInt(tl_body_container.attr('ref') ? tl_body_container.attr('ref') : 0);
+    };
+    
+    this.getKeyCount = function() {
+      return $('.tl-timescale-container').length;
+    };
+    
+    this.focusNext = function() {
+      var current_key = this.getCurrentKey();
+      this.focusContent(current_key+1);
+    };
+    
+    this.focusPrev = function() {
+      var current_key = this.getCurrentKey();
+      this.focusContent(current_key-1);
+    };
+    
+    btn_next.click(function() {
+      that.focusNext();
+    });
+    
+    btn_prev.click(function() {
+      that.focusPrev();
+    });
   
     // Draw scale lines.
     var current_scale = null;

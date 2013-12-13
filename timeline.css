@@ -71,14 +71,15 @@
   float: left;
 }
 
-#tl-body-container {
+.tl-body-container {
+  padding: 0 36px;
   height: 180px;
-  width: 492px;
   border: 1px solid yellow;
-  float: left;
+  background:#EEE;
 }
 
 .tl-body-content {
+  padding: 10px;
   display:none
 }
 
@@ -95,4 +96,20 @@
 .timeline-box .btn-prev, .timeline-box .btn-next {
   width: 28px;
   height: 80px;
+  background: #F00;
+  position: absolute;
+  cursor: pointer;
+  top: 40px;
+}
+
+.timeline-box .btn-prev {
+  /*Todo: replace*/
+  background: url(http://placehold.it/28x80&text=prev);
+  left: 6px;
+}
+
+.timeline-box .btn-next {
+  /*Todo: replace*/
+  background: url(http://placehold.it/28x80&text=next);
+  right: 6px;
 }
