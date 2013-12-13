@@ -5,12 +5,14 @@ $.fn.timeline = function(json){
   $(this).empty();
   var that = this;
 
+  // Get total points calculated by year and month part, used to draw scale.
   this.getPoints = function(date_string) {
     var parts = date_string.split('-');
     var points = 0;
     points = 12 * parseInt(parts[0]) + parseInt(parts[1]) - 1;
     return points;
   }
+  // Get String Month representation from a point value.
   this.getMonth = function(points,display_month) {
     var rtn = parseInt(points / 12);
     if ( display_month) {
@@ -49,9 +51,12 @@ $.fn.timeline = function(json){
   var ratio = json.ratio ? json.ratio : 40;
   tl_timescale.css({width: ( diff * ratio )  + 'px'});
 
-  // Slide the timescale.
+  // Adjust the timescale.
   this.moveTimeScale = function(target_left) {
     var current_left = parseInt(tl_timescale.css('left'));
+    if(isNaN(current_left)) {
+      current_left = 0;
+    }
     var moved = target_left - current_left;
     moved = (moved > 0 ? "+=" : "-=") + Math.abs(moved);
     tl_timescale.animate({
@@ -59,6 +64,7 @@ $.fn.timeline = function(json){
     });
   };
 
+  // Adjust the slider.
   this.moveSlider = function(target_left) {
     var slide_ratio = Math.abs(target_left) / tl_timescale.width();
     $("#tl-slider .ui-slider-handle").css({left: (slide_ratio * 100) + '%'}); 
@@ -67,9 +73,7 @@ $.fn.timeline = function(json){
   // Load content to top area.
   this.loadContent = function(dates){
     $.each(dates, function(i,n){
-
       var key = $('.tl-body-content').length;
-
       var tl_body_content = $('<div class="tl-body-content" key="' + key + '"></div>');
       tl_body_content.append('<div class="tl-body-content-date">'+ n.date +'</div>');
       tl_body_content.append('<div class="tl-body-content-title">'+ n.title +'</div>');
@@ -79,10 +83,20 @@ $.fn.timeline = function(json){
     });
   };
 
+  // Load timepoints to scale.
+  this.loadTimescale = function(dates){
+    $.each(dates, function(i,n) {
+      var left = ( that.getPoints(n.date) - min_point + additional) * ratio; 
+      var key = $('.tl-timescale-container').length;
+      var tl_timescale_container = $('<div class="tl-timescale-container" key="' + key + '"></div>');
+      tl_timescale_container.append('<span title="'+ n.title +'">' + n.date + '</span>');
+      tl_timescale_container.css({left: left + 'px'});
+      tl_timescale.append(tl_timescale_container);
+    });
+  }
+
+  // Focus to a specific time point, provied by key value.
   this.focusContent = function(key) {
-    if(key === false) {
-      key = 0;  
-    } 
 
     var point_left = $('.tl-timescale-container[key="' + key + '"]').css('left');
     var target_left = - (parseInt(point_left) - $(that).width() / 2);
@@ -94,12 +108,6 @@ $.fn.timeline = function(json){
     $('#tl-body-container .tl-body-content:nth-child(' + (key + 1) + ')').css({'display':'block'});
     // adjust slider.
     that.moveSlider(target_left);
-
-  }
-
-  // Load timepoints to scale.
-  this.loadTimescale = function(){
-
   }
 
   // Draw scale lines.
@@ -120,27 +128,12 @@ $.fn.timeline = function(json){
     tl_timescale.append(current_scale);
   }
 
-  // Insert available date points. 
-  $.each(json.points, function(i,n){
-
-    var tl_body_container = $('<div class="tl-body-container"></div>');
-    var left = ( that.getPoints(n.date) - min_point + additional) * ratio; 
-
-    if ( i === json.focus ) {
-      tl_timescale.css({left: (-left+$(that).width()/2) + 'px'});
-    }
-
-    var key = $('.tl-timescale-container').length;
-    var tl_timescale_container = $('<div class="tl-timescale-container" key="' + key + '"></div>');
-    tl_timescale_container.append('<span title="'+ n.title +'">' + n.date + '</span>');
-    tl_timescale_container.css({left: left + 'px'});
-    tl_timescale.append(tl_timescale_container);
-
-  });
+  this.loadTimescale(json.points);
+  this.loadContent(json.points);
+  this.focusContent(0);
 
   $(".tl-timescale-container span").tooltip();
   $(".tl-timescale-container span").bind('click', function(){
-
     var key = parseInt($(this).parent().attr('key')); 
     that.focusContent(key);
   });
@@ -171,8 +164,6 @@ $.fn.timeline = function(json){
     }
   });
 
-  this.loadContent(json.points);
-  this.focusContent(false);
 
   // Slider bar represents one widget width ratio.
   //$(".ui-slider .ui-slider-handle").css({width: ($(that).width() * $(that).width() / tl_timescale.width() ) + 'px'});
