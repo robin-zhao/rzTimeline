@@ -1,6 +1,6 @@
-#my-timeline {
+.rztimeline-container {
   height: 300px;
-  border: 1px solid #000;
+  border: 1px solid #999;
   overflow-y: hidden;
   overflow: hidden;
   position: relative;
@@ -32,7 +32,7 @@
   position: absolute;
   border: 1px solid blue;
   font-size: 11px;
-  width: 60px;
+  width: 80px;
 }
 
 .tl-timescale-container span.span-row-0 {
@@ -90,7 +90,12 @@
 
 .tl-body-content {
   padding: 10px;
-  display:none
+  display: none;
+  position: absolute;
+  top: 0px;
+  left: 36px;
+  background: #FFF;
+  z-index: 99;
 }
 
 #tl-middle-line {
@@ -104,12 +109,13 @@
 }
 
 .timeline-box .btn-prev, .timeline-box .btn-next {
-  width: 28px;
-  height: 80px;
+  width: 19px;
+  height: 140px;
   background: #F00;
   position: absolute;
   cursor: pointer;
-  top: 40px;
+  top: 20px;
+  z-index: 999;
 }
 
 .timeline-box {
@@ -117,15 +123,21 @@
 }
 
 .timeline-box .btn-prev {
-  /*Todo: replace*/
-  background: url(http://placehold.it/28x80&text=prev);
+  background: url(../images/previous.png) top left no-repeat;
   left: 6px;
 }
 
+.timeline-box .btn-prev:hover {
+  background: url(../images/previous_hover.png) top left no-repeat;
+}
+
 .timeline-box .btn-next {
-  /*Todo: replace*/
-  background: url(http://placehold.it/28x80&text=next);
+  background: url(../images/next.png) top left no-repeat;
   right: 6px;
+}
+
+.timeline-box .btn-next:hover {
+  background: url(../images/next_hover.png) top left no-repeat;
 }
 
 .timeline-box .tl-body-content-thumbnail {

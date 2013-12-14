@@ -1,41 +1,45 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.1//EN" "http://www.w3.org/1999/xhtml">
+<!DOCTYPE html>
 <html>
-  <head>
-    <script src="js/jquery-1.10.2.js"></script>
-    <script src="js/jquery-ui-1.10.3.js"></script>
-    <script src="js/jquery.rztimeline.js"></script>
-    <link href="css/jquery.rztimeline.css" rel="stylesheet" type="text/css" />
-    <link href="css/jquery-ui.css" rel="stylesheet" type="text/css" />
-
-    <script language="javascript">
-      $(document).ready(function(){
-        $("#my-timeline").timeline({
-          min_date:'1906-01-02',
-          max_date:'2001-11-05',
-          width: 600
-        });
-      });
-    </script>
-  </head>
-  <body>
-    <div id="my-timeline"></div>
-    <h6>Todo list ( green means fixed )</h6>
-    <ol>
-      <li class="done">display certain points at startup.</li>
-      <li class="done">add a slider at bottom</li>
-      <li class="done">Click on timepoint will show details of this event in the top area</li>
-      <li class="done">drag the timescale will move the slider accordingly</li>
-      <li class="done">Date vlaue will support format 2013-12-12, not only to year level</li>
-      <li>top area will have left and right arrow to allow navigate between neighbour timepoints.</li>
-      <li class="done">drag the timescale will load timepoints within this screen view</li>
-      <li class="done">loaded time points should show more accurate in timescale.</li>
-      <li class="done">a vertical red line in the middle of timescale, indicating focus position.</li>
-      <li>Slider shall not slide out of min to max time point area</li>
-      <li class="done">get current date in screen scope</li>
-      <li>Time point entry shall not overlap each other.</li>
-      <li>Time point should be render at day base, not month base in timescale.</li>
-      <li>A loading... mechnism should be added when loading data through ajax.</li>
-      <li>Under timescale should show month label: Feb, Mar, Apr, ...</li>
-    </ol>
-  </body>
+    <head>
+        <script src="js/jquery-1.10.2.js"></script>
+        <script src="js/jquery-ui-1.10.3.js"></script>
+        <script src="js/jquery.rztimeline.js"></script>
+        <link href="css/jquery.rztimeline.css" rel="stylesheet" type="text/css" />
+        <link href="css/jquery-ui.css" rel="stylesheet" type="text/css" />
+        <link href="css/style.css" rel="stylesheet" type="text/css" />
+        
+        <script>
+          $(document).ready(function(){
+            $("#my-timeline").timeline({
+              min_date:'1906-01-02',
+              max_date:'2001-11-05',
+              width: 600
+            });
+          });
+        </script>
+    </head>
+    <body>
+        <div class="container">
+            <h2>jQuery rzTimeline Demo</h2>
+            <div id="my-timeline"></div>
+            <h6>Todo list ( green means fixed )</h6>
+            <ol>
+                <li class="done">display certain points at startup.</li>
+                <li class="done">add a slider at bottom</li>
+                <li class="done">Click on timepoint will show details of this event in the top area</li>
+                <li class="done">drag the timescale will move the slider accordingly</li>
+                <li class="done">Date vlaue will support format 2013-12-12, not only to year level</li>
+                <li>top area will have left and right arrow to allow navigate between neighbour timepoints.</li>
+                <li class="done">drag the timescale will load timepoints within this screen view</li>
+                <li class="done">loaded time points should show more accurate in timescale.</li>
+                <li class="done">a vertical red line in the middle of timescale, indicating focus position.</li>
+                <li>Slider shall not slide out of min to max time point area</li>
+                <li class="done">get current date in screen scope</li>
+                <li>Time point entry shall not overlap each other.</li>
+                <li>Time point should be render at day base, not month base in timescale.</li>
+                <li>A loading... mechnism should be added when loading data through ajax.</li>
+                <li>Under timescale should show month label: Feb, Mar, Apr, ...</li>
+            </ol>
+        </div>
+    </body>
 </html>

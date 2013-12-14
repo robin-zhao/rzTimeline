@@ -24,6 +24,7 @@
     // Set width.
     $(this).css({width: json.width + 'px'});
     // Add skeleton divs.
+    var container = $('<div class="rztimeline-container"></div>');
     var tl_body = $('<div id="tl-body" class="timeline-box"></div>');
   
     var btn_prev = $('<div class="btn-prev"></div>');
@@ -36,10 +37,11 @@
     var tl_timescale = $('<div id="tl-timescale"></div>');
     var tl_slider = $('<div id="tl-slider"></div>');
     var tl_middle_line = $('<div id="tl-middle-line"></div>');
-    $(this).append(tl_middle_line);
-    $(this).append(tl_body);
-    $(this).append(tl_timescale);
-    $(this).append(tl_slider);
+    $(this).append(container);
+    container.append(tl_middle_line);
+    container.append(tl_body);
+    container.append(tl_timescale);
+    container.append(tl_slider);
   
     var min_point = this.getPoints(json.min_date); 
     var max_point = this.getPoints(json.max_date);
@@ -97,7 +99,7 @@
     };
   
     // Focus to a specific time point, provied by key value.
-    this.focusContent = function(key) {
+    this.focusContent = function(key, direction) {
       var max_key = this.getKeyCount()-1;
       if (key < 0 || key > max_key) {
         ;
@@ -119,8 +121,22 @@
         that.moveTimeScale(target_left); 
     
         // Show current time point detail in top area.
-        tl_body_container.find('.tl-body-content').hide(); 
-        tl_body_container.find('.tl-body-content:nth-child(' + (key + 1) + ')').show();
+        if (direction == 'right') {
+            tl_body_container.find('.tl-body-content.current').removeClass('current').animate({'left': '-100%'}, function(){
+                $(this).hide().css('left', '36px');
+            }); 
+            tl_body_container.find('.tl-body-content:nth-child(' + (key + 1) + ')').addClass('current').css('left', '100%').show().animate({'left': '36px'});
+        }
+        else if (direction == 'left') {
+            tl_body_container.find('.tl-body-content.current').removeClass('current').animate({'left': '100%'}, function(){
+                $(this).hide().css('left', '36px');
+            }); 
+            tl_body_container.find('.tl-body-content:nth-child(' + (key + 1) + ')').addClass('current').css('left', '-100%').show().animate({'left': '36px'});
+        }
+        else {
+            tl_body_container.find('.tl-body-content.current').removeClass('current').fadeOut(300);
+            tl_body_container.find('.tl-body-content:nth-child(' + (key + 1) + ')').addClass('current').fadeIn();
+        }
         // adjust slider.
         that.moveSlider(target_left);
         tl_body_container.attr('ref', key);
@@ -138,12 +154,12 @@
     
     this.focusNext = function() {
       var current_key = this.getCurrentKey();
-      this.focusContent(current_key+1);
+      this.focusContent(current_key+1, 'right');
     };
     
     this.focusPrev = function() {
       var current_key = this.getCurrentKey();
-      this.focusContent(current_key-1);
+      this.focusContent(current_key-1, 'left');
     };
     
     btn_next.click(function() {
@@ -215,7 +231,7 @@
     };
     // Bind the events after new timepoints are loaded.
     this.bindEvents = function() {
-      $(".tl-timescale-container span").tooltip();
+      // $(".tl-timescale-container span").tooltip();
       $(".tl-timescale-container span").bind('click', function(){
         var key = parseInt($(this).parent().attr('key')); 
         that.focusContent(key);
