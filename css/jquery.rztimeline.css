@@ -99,10 +99,10 @@
 }
 
 #tl-middle-line {
-  left: 300px;
-  border-left: 1px solid red;
+  left: 50%;
+  border-right: 1px solid #C03;
   height: 100px;
-  width: 1px;
+  width: 0px;
   position: absolute;
   top: 180px;
   float: left;

@@ -283,7 +283,7 @@
         width: "600",
         min_date:'1906-01-02',
         max_date:'2001-11-05',
-        ratio: 40
+        ratio: 80
     };
 })(jQuery);
 
