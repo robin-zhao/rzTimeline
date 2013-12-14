@@ -2,6 +2,11 @@
 // GET parameters.
 $start = $_GET['start']; // Format: 1969-01-01
 $end = $_GET['end'];
+$sleep = $_GET['sleep']; // for test loading slow
+
+if($sleep) {
+    sleep($sleep);    
+}
 
 // Generate sample data.
 $time_start = strtotime($start);

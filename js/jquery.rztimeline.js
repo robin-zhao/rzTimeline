@@ -49,9 +49,11 @@
     var btn_prev = $('<div class="btn-prev"></div>');
     var tl_body_container = $('<div class="tl-body-container"></div>');
     var btn_next = $('<div class="btn-next"></div>');
+    var msg_box = $('<div class="msg-box"></div>');
     tl_body.append(btn_prev)
            .append(tl_body_container)
-           .append(btn_next);
+           .append(btn_next)
+           .append(msg_box);
     
     var tl_timescale = $('<div id="tl-timescale"></div>');
     var tl_scaleband = $('<div class="tl-scaleband"></div>');
@@ -279,9 +281,17 @@
       $.ajax({
         url: 'server/fixture.php',
         type: 'GET',
-        data: { start: screen_year-1+'-01-01', end: (screen_year+2)+'-01-01' },
-        dataType: 'json'
+        data: { 
+            start: screen_year-1+'-01-01'
+            , end: (screen_year+2)+'-01-01'
+            // , sleep:1 
+        },
+        dataType: 'json',
+        beforeSend: function() {
+            $('.msg-box').html('Loading...').show();
+        }
       }).done(function(data){
+        $('.msg-box').html('').fadeOut();
         var load_data = [];
         $.each(data, function(i, n) {
           var parts = n.date.split('-');

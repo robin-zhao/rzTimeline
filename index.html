@@ -30,16 +30,25 @@
                 <li class="done">Click on timepoint will show details of this event in the top area</li>
                 <li class="done">drag the timescale will move the slider accordingly</li>
                 <li class="done">Date vlaue will support format 2013-12-12, not only to year level</li>
-                <li>top area will have left and right arrow to allow navigate between neighbour timepoints.</li>
+                <li class="done">top area will have left and right arrow to allow navigate between neighbour timepoints.</li>
                 <li class="done">drag the timescale will load timepoints within this screen view</li>
                 <li class="done">loaded time points should show more accurate in timescale.</li>
                 <li class="done">a vertical red line in the middle of timescale, indicating focus position.</li>
                 <li>Slider shall not slide out of min to max time point area</li>
                 <li class="done">get current date in screen scope</li>
-                <li>Time point entry shall not overlap each other.</li>
-                <li>Time point should be render at day base, not month base in timescale.</li>
-                <li>A loading... mechnism should be added when loading data through ajax.</li>
-                <li>Under timescale should show month label: Feb, Mar, Apr, ...</li>
+                <li class="done">Time point entry shall not overlap each other.</li>
+                <li class="done">Time point should be render at day base, not month base in timescale.</li>
+                <li class="done">A loading... mechnism should be added when loading data through ajax.</li>
+                <li class="done">Under timescale should show month label: Feb, Mar, Apr, ...</li>
+                <li>prev and next button should trigger loadMore() smartly too.</li>
+                <li>Mousewheel should trigger loadMore() smartly too.</li>
+                <li>Timescales items should display more info like title etc, and shoule looks better.</li>
+                <li>Test in IE7+.</li>
+                <li>Test in mobile touch device.</li>
+                
+                <li class="xgao">To avoid order problem with date, I suggest not to keep the loaded datas when fetch new datas, just redraw it.</li>
+                <li>To avoid performance problem, I suggest draw timescales only in the screen (or some more), that will reduce a lot of dom.</li>
+                <li>There should be something better than the slider, I'll try.</li>
             </ol>
         </div>
     </body>
