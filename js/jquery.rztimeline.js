@@ -1,6 +1,10 @@
 (function($) {
-  $.fn.timeline = function(json){
-  
+  $.fn.timeline = function(options) {
+    // Extend our default options with those provided.
+    // Note that the first argument to extend is an empty
+    // object – this is to keep from overriding our "defaults" object.
+    var opts = $.extend({}, $.fn.timeline.defaults, options);
+    
     // Prepare to redraw.
     $(this).empty();
     var that = this;
@@ -22,7 +26,7 @@
     };
   
     // Set width.
-    $(this).css({width: json.width + 'px'});
+    $(this).css({width: opts.width + 'px'});
     // Add skeleton divs.
     var container = $('<div class="rztimeline-container"></div>');
     var tl_body = $('<div id="tl-body" class="timeline-box"></div>');
@@ -43,14 +47,14 @@
     container.append(tl_timescale);
     container.append(tl_slider);
   
-    var min_point = this.getPoints(json.min_date); 
-    var max_point = this.getPoints(json.max_date);
+    var min_point = this.getPoints(opts.min_date); 
+    var max_point = this.getPoints(opts.max_date);
   
     // Calculate scale ratio.
     var additional = 30; //  months before and after timeline.
     var diff = max_point - min_point + additional * 2; 
     
-    var ratio = json.ratio ? json.ratio : 40;
+    var ratio = opts.ratio;
     tl_timescale.css({width: ( diff * ratio )  + 'px'});
   
     // Adjust the timescale.
@@ -273,5 +277,13 @@
     //$(".ui-slider .ui-slider-handle").css({width: ($(that).width() * $(that).width() / tl_timescale.width() ) + 'px'});
   
   };
+  
+    // Plugin defaults
+    $.fn.timeline.defaults = {
+        width: "600",
+        min_date:'1906-01-02',
+        max_date:'2001-11-05',
+        ratio: 40
+    };
 })(jQuery);
 
