@@ -14,8 +14,8 @@ if ($time_end < $time_start) {
 $data = array();
 $time = $time_start;
 while ($time <= $time_end) {
-    // Use the date as a key to identify whether data for one day is loaded or not.
-    // Use an array for each date to support multiple events in the same day.
+    // @NOTE: Use the date as a key to identify whether data for one day is loaded or not.
+    // @NOTE: Use an array for each date to support multiple events in the same day.
     $data[$time][] = array(
         'date' => date('Y-m-d', $time),
         'title' => 'Lorem Ipsum ' . uniqid(),
