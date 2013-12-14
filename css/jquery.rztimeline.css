@@ -9,7 +9,22 @@
 #tl-body {
   height: 180px;
   border-bottom: 1px solid #bbb;
-  box-shadow: 0px 0px 2px #999;
+  box-shadow: 0px 0px 3px #999;
+  z-index: 9999;
+  position: relative;
+  overflow: hidden;
+}
+
+#tl-middle-line {
+  z-index: 9998;
+  left: 50%;
+  background: #a36;
+  height: 100px;
+  width: 1px;
+  position: absolute;
+  top: 181px;
+  box-shadow:0 1px 2px #a36;
+  opacity: 0.75;
 }
 
 #tl-timescale {
@@ -21,6 +36,7 @@
   position: relative;
   background: #EEE;
   overflow: hidden;
+  z-index: 999;
 }
 
 #tl-timescale .tl-timeaxis {
@@ -82,7 +98,23 @@
   position: absolute;
   font-size: 0px;
 }
-
+.scale .label-month {
+    position: absolute;
+    top:5px;
+    left:-8px;
+    width: auto;
+    height: auto;
+    font-size: 10px;
+}
+.scale .label-year {
+    position: absolute;
+    top:18px;
+    left:-12px;
+    width: auto;
+    height: auto;
+    font-size: 10px;
+    font-weight: bold;
+}
 .scale-date {
   height: 2px;
 }
@@ -128,16 +160,6 @@
   left: 36px;
   background: #FFF;
   z-index: 99;
-}
-
-#tl-middle-line {
-  left: 50%;
-  border-right: 1px solid #C03;
-  height: 100px;
-  width: 0px;
-  position: absolute;
-  top: 180px;
-  float: left;
 }
 
 .timeline-box .btn-prev, .timeline-box .btn-next {

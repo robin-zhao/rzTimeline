@@ -5,23 +5,38 @@
     // object – this is to keep from overriding our "defaults" object.
     var opts = $.extend({}, $.fn.timeline.defaults, options);
     
+    var month_names = [ "January", "February", "March", "April", "May", "June",
+    "July", "August", "September", "October", "November", "December" ];
+    
+    var month_short_names = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ];
+    
     // Prepare to redraw.
     $(this).empty();
     var that = this;
   
-    // Get total points calculated by year and month and date part, used to draw scale.
+    // Get total points calculated by year and month part, used to draw scale.
     this.getPoints = function(date_string) {
+      var parts = date_string.split('-');
+      var points = 0;
+      points = 12 * parseInt(parts[0]) + parseInt(parts[1]) - 1;
+      return points;
+    };
+    // Get total points calculated by year and month and date part, used to draw scale.
+    this.getDatePoints = function(date_string) {
       var parts = date_string.split('-');
       var points = 0;
       points = 12 * parseInt(parts[0]) + parseInt(parts[1]) - 1 + 1 / 30 * (parseInt(parts[2]) - 1);
       return points;
     };
     // Get String Month representation from a point value.
-    this.getMonth = function(points,display_month) {
+    this.getMonthFromPoint = function(points) {
+      var rtn = parseInt(points % 12); 
+      return rtn;
+    };
+    // Get String Month representation from a point value.
+    this.getYearFromPoint = function(points) {
       var rtn = parseInt(points / 12);
-      if ( display_month) {
-       rtn += '-' + parseInt(points % 12); 
-      }
       return rtn;
     };
   
@@ -55,7 +70,7 @@
     var max_point = this.getPoints(opts.max_date);
   
     // Calculate scale ratio.
-    var additional = 30; //  months before and after timeline.
+    var additional = 18; //  months before and after timeline.
     var diff = max_point - min_point + additional * 2; 
     
     var ratio = opts.ratio;
@@ -96,7 +111,7 @@
     // Load timepoints to scale.
     this.loadTimescale = function(dates){
       $.each(dates, function(i,n) {
-        var left = ( that.getPoints(n.date) - min_point + additional) * ratio; 
+        var left = ( that.getDatePoints(n.date) - min_point + additional) * ratio; 
         var key = $('.tl-timescale-container').length;
         var timescale_row = key % 3;
         var tl_timescale_container = $('<div class="tl-timescale-container timescale-row-' + timescale_row + '" title="'+ n.title +'" key="' + key + '">' + n.date + '</div>');
@@ -185,10 +200,13 @@
         for(var i=0; i<diff; i++){
           scale_point = min_point - additional + i;
           var month_scale = $('<div class="scale scale-month"></div>');
-          month_scale.append('<span>' + this.getMonth(scale_point,false) + '</span>');
+          month_scale.append('<div class="label-month">' + month_short_names[this.getMonthFromPoint(scale_point)] + '</div>');
           month_scale.css({left: i*ratio +'px'});
+          
           if( scale_point % 12 === 0){
             month_scale.removeClass('scale-month').addClass('scale-year');
+            label_year = $('<div class="label-year">'+this.getYearFromPoint(scale_point)+'</div>');
+            month_scale.append(label_year);
           }
           tl_timeaxis.append(month_scale);
           
@@ -231,14 +249,14 @@
     this.loadMore = function(left) {
       var screen_year = null;
       if(left === false) {
-        screen_year = this.getMonth(min_point, false);
+        screen_year = this.getYearFromPoint(min_point);
         console.log(min_point);
       }else{
         // formula: W / (max -min + 2a ) == (-init_left + w/2) / a
         var init_left = $(that).width() / 2  - additional * tl_timescale.width() / (max_point - min_point + 2 * additional);
         // formula: (-init_left + w/2) / a == (- new_left + w/2) / (new_point - min_point + a)
         var new_point = (-left + $(that).width()/ 2) * additional / (-init_left + $(that).width() / 2) + min_point - additional; 
-        screen_year = this.getMonth(new_point, false);
+        screen_year = this.getYearFromPoint(new_point);
       }
       if( -1 !== $.inArray(screen_year, loaded_year) ) {
         return;
@@ -298,7 +316,9 @@
     });
     tl_timescale.mousewheel(function(event){
         var new_position = parseInt($(this).css('left')) + event.deltaY * event.deltaFactor / 2;
-        $(this).css('left', new_position+'px');
+        if (new_position < 0 && new_position > (-diff * ratio+opts.width)) {
+            $(this).css('left', new_position+'px');
+        }
         event.preventDefault();
     });
   
@@ -323,7 +343,7 @@
     // Plugin defaults
     $.fn.timeline.defaults = {
         width: "600",
-        min_date:'1906-01-02',
+        min_date:'1906-01-13',
         max_date:'2001-11-05',
         ratio: 80,
         show_date_axis: false
