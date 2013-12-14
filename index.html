@@ -3,6 +3,7 @@
     <head>
         <script src="js/jquery-1.10.2.js"></script>
         <script src="js/jquery-ui-1.10.3.js"></script>
+        <script src="js/jquery.mousewheel.js"></script>
         <script src="js/jquery.rztimeline.js"></script>
         <link href="css/jquery.rztimeline.css" rel="stylesheet" type="text/css" />
         <link href="css/jquery-ui.css" rel="stylesheet" type="text/css" />
@@ -11,7 +12,8 @@
         <script>
           $(document).ready(function(){
             $("#my-timeline").timeline({
-              width: 720
+              width: 720,
+              show_date_axis: false
             });
           });
         </script>

@@ -39,6 +39,10 @@
            .append(btn_next);
     
     var tl_timescale = $('<div id="tl-timescale"></div>');
+    var tl_scaleband = $('<div class="tl-scaleband"></div>');
+    var tl_timeaxis = $('<div class="tl-timeaxis"></div>');
+    tl_timescale.append(tl_scaleband);
+    tl_timescale.append(tl_timeaxis);
     var tl_slider = $('<div id="tl-slider"></div>');
     var tl_middle_line = $('<div id="tl-middle-line"></div>');
     $(this).append(container);
@@ -94,11 +98,11 @@
       $.each(dates, function(i,n) {
         var left = ( that.getPoints(n.date) - min_point + additional) * ratio; 
         var key = $('.tl-timescale-container').length;
-        var tl_timescale_container = $('<div class="tl-timescale-container" key="' + key + '"></div>');
-        var span_row = key % 3;
-        tl_timescale_container.append('<span class="span-row-' + span_row + '" title="'+ n.title +'">' + n.date + '</span>');
+        var timescale_row = key % 3;
+        var tl_timescale_container = $('<div class="tl-timescale-container timescale-row-' + timescale_row + '" title="'+ n.title +'" key="' + key + '">' + n.date + '</div>');
+        tl_timescale_container.append('<span class="" title="'+ n.title +'"></span>');
         tl_timescale_container.css({left: left + 'px'});
-        tl_timescale.append(tl_timescale_container);
+        tl_scaleband.append(tl_timescale_container);
       });
     };
   
@@ -174,20 +178,52 @@
       that.focusPrev();
     });
   
-    // Draw scale lines.
-    var current_scale = null;
-    var scale_point = 0;
-    for(var i=0; i<diff; i++){
-      scale_point = min_point - additional + i;
-      current_scale = $('<div class="scale"></div>');
-      current_scale.append('<span>' + this.getMonth(scale_point,false) + '</span>');
-      current_scale.css({left: i*ratio +'px'});
-      if( scale_point % 12 === 0){
-        current_scale.addClass('scale-decade');
-      }
-      tl_timescale.append(current_scale);
+    // Draw Time Axis.
+    this.drawTimeAxis = function() {
+        var scale_point = 0;
+        // Draw month axis
+        for(var i=0; i<diff; i++){
+          scale_point = min_point - additional + i;
+          var month_scale = $('<div class="scale scale-month"></div>');
+          month_scale.append('<span>' + this.getMonth(scale_point,false) + '</span>');
+          month_scale.css({left: i*ratio +'px'});
+          if( scale_point % 12 === 0){
+            month_scale.removeClass('scale-month').addClass('scale-year');
+          }
+          tl_timeaxis.append(month_scale);
+          
+          // Draw date axis (Will be slow if the period is longer than 100 years).
+          if (opts.show_date_axis) {
+              var num_of_date_axis_in_one_month = 1;
+              if (opts.ratio >= 240) {
+                  num_of_date_axis_in_one_month = 30;
+              }
+              if (opts.ratio >= 120) {
+                  num_of_date_axis_in_one_month = 10;
+              }
+              else if (opts.ratio >= 40) {
+                  num_of_date_axis_in_one_month = 4;
+              }
+              else if (opts.ratio >= 20) {
+                  num_of_date_axis_in_one_month = 4;
+              }
+              else if (opts.ratio >= 8) {
+                  num_of_date_axis_in_one_month = 2;
+              }
+              else {
+                  num_of_date_axis_in_one_month = 1;
+              }
+              for (var j = 0; j < num_of_date_axis_in_one_month - 1; j ++) {
+                  var date_scale = $('<div class="scale scale-date"></div>');
+                  date_scale.css({left: i*ratio+(j+1)*ratio/num_of_date_axis_in_one_month +'px'});
+                  
+                  tl_timeaxis.append(date_scale);
+              }
+          }
+          
+        }
     }
-  
+    this.drawTimeAxis();
   
     var loaded_year = [];
   
@@ -236,14 +272,15 @@
     // Bind the events after new timepoints are loaded.
     this.bindEvents = function() {
       // $(".tl-timescale-container span").tooltip();
-      $(".tl-timescale-container span").bind('click', function(){
-        var key = parseInt($(this).parent().attr('key')); 
+      $(".tl-timescale-container").bind('click', function(){
+        $(".tl-timescale-container").removeClass('current');
+        $(this).addClass('current');
+        var key = parseInt($(this).attr('key')); 
         that.focusContent(key);
       });
     };
   
     this.loadMore(false);
-  
     // Make timeline draggable.
     tl_timescale.draggable({
       axis:"x",
@@ -258,7 +295,12 @@
         that.moveSlider(final_left);
         that.loadMore(final_left);
       }
-    }); 
+    });
+    tl_timescale.mousewheel(function(event){
+        var new_position = parseInt($(this).css('left')) + event.deltaY * event.deltaFactor / 2;
+        $(this).css('left', new_position+'px');
+        event.preventDefault();
+    });
   
     tl_slider.slider({
       min:0,
@@ -283,7 +325,8 @@
         width: "600",
         min_date:'1906-01-02',
         max_date:'2001-11-05',
-        ratio: 80
+        ratio: 80,
+        show_date_axis: false
     };
 })(jQuery);
 
