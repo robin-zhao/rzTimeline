@@ -96,7 +96,10 @@
     };
   
     // Load content to top area.
-    this.loadContent = function(dates){
+    this.loadContent = function(dates, redraw){
+      if (redraw) {
+        $('.tl-body-content').remove();
+      }
       $.each(dates, function(i,n){
         var key = $('.tl-body-content').length;
         var tl_body_content = $('<div class="tl-body-content" key="' + key + '"></div>');
@@ -109,7 +112,10 @@
     };
   
     // Load timepoints to scale.
-    this.loadTimescale = function(dates){
+    this.loadTimescale = function(dates, redraw){
+      if (redraw) {
+        $('.tl-timescale-container').remove();
+      }
       $.each(dates, function(i,n) {
         var left = ( that.getDatePoints(n.date) - min_point + additional) * ratio; 
         var key = $('.tl-timescale-container').length;
@@ -120,6 +126,12 @@
         tl_scaleband.append(tl_timescale_container);
       });
     };
+    
+    // Focus to a scale
+    this.focusScale = function(key) {
+        $(".tl-timescale-container").removeClass('current');
+        $(".tl-timescale-container[key="+key+"]").addClass('current');
+    }
   
     // Focus to a specific time point, provied by key value.
     this.focusContent = function(key, direction) {
@@ -178,11 +190,13 @@
     this.focusNext = function() {
       var current_key = this.getCurrentKey();
       this.focusContent(current_key+1, 'right');
+      this.focusScale(current_key+1);
     };
     
     this.focusPrev = function() {
       var current_key = this.getCurrentKey();
       this.focusContent(current_key-1, 'left');
+      this.focusScale(current_key-1);
     };
     
     btn_next.click(function() {
@@ -265,7 +279,7 @@
       $.ajax({
         url: 'server/fixture.php',
         type: 'GET',
-        data: { start: screen_year+'-01-01', end: (screen_year+1)+'-01-01' },
+        data: { start: screen_year-1+'-01-01', end: (screen_year+2)+'-01-01' },
         dataType: 'json'
       }).done(function(data){
         var load_data = [];
@@ -276,13 +290,14 @@
           }
         }); 
 
-        that.loadContent(load_data);
-        that.loadTimescale(load_data);
+        that.loadContent(load_data, false);
+        that.loadTimescale(load_data, false);
         // Prevent duplicate event. @todo
         that.bindEvents();
         loaded_year.push(screen_year);
          if( left === false ) {
            that.focusContent(0);
+           that.focusScale(0);
          }
       });
       
@@ -291,10 +306,9 @@
     this.bindEvents = function() {
       // $(".tl-timescale-container span").tooltip();
       $(".tl-timescale-container").bind('click', function(){
-        $(".tl-timescale-container").removeClass('current');
-        $(this).addClass('current');
         var key = parseInt($(this).attr('key')); 
         that.focusContent(key);
+        that.focusScale(key);
       });
     };
   
