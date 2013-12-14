@@ -1,0 +1,164 @@
+#my-timeline {
+  height: 300px;
+  border: 1px solid #000;
+  overflow-y: hidden;
+  overflow: hidden;
+  position: relative;
+}
+
+#tl-body {
+  height: 180px;
+  border-bottom: 1px solid #bbb;
+  box-shadow: 0px 0px 2px #999;
+}
+
+#tl-timescale {
+  height: 35px;
+  margin-top: 60px;
+  border-top: 1px solid #000;
+  background-color: #eee;
+}
+
+.tl-timescale-container {
+  width: 5px;
+  height: 5px;
+  background-color: #000;
+  float: left;
+  position: absolute;
+}
+
+.tl-timescale-container span {
+  left: 0px;
+  position: absolute;
+  border: 1px solid blue;
+  font-size: 11px;
+  width: 60px;
+}
+
+.tl-timescale-container span.span-row-0 {
+  top: -20px;
+}
+
+.tl-timescale-container span.span-row-1 {
+  top: -40px;
+}
+
+.tl-timescale-container span.span-row-2 {
+  top: -60px;
+}
+
+.scale {
+  height: 4px;
+  width: 1px;
+  border-left: 1px solid #000;
+  position: absolute;
+  font-size: 0px;
+}
+
+.scale-decade {
+  height: 10px;
+  font-size: 12px;
+  font-weight: bold;
+}
+
+.scale-decade span {
+  position: absolute;
+  left: -12px;
+  top: 12px;
+}
+
+#tl-slider {
+  height: 10px;
+  border: 1px solid #000;
+}
+
+.done {
+  color: green;
+}
+
+#arrow-left, #arrow-right {
+  height: 180px;
+  width: 50px;
+  border: 1px red solid;
+  float: left;
+}
+
+.tl-body-container {
+  padding: 0 36px;
+  height: 180px;
+}
+
+.tl-body-content {
+  padding: 10px;
+  display:none
+}
+
+#tl-middle-line {
+  left: 300px;
+  border-left: 1px solid red;
+  height: 100px;
+  width: 1px;
+  position: absolute;
+  top: 180px;
+  float: left;
+}
+
+.timeline-box .btn-prev, .timeline-box .btn-next {
+  width: 28px;
+  height: 80px;
+  background: #F00;
+  position: absolute;
+  cursor: pointer;
+  top: 40px;
+}
+
+.timeline-box {
+  font-family: Arial, Helvetica, Verdana, sans-serif;
+}
+
+.timeline-box .btn-prev {
+  /*Todo: replace*/
+  background: url(http://placehold.it/28x80&text=prev);
+  left: 6px;
+}
+
+.timeline-box .btn-next {
+  /*Todo: replace*/
+  background: url(http://placehold.it/28x80&text=next);
+  right: 6px;
+}
+
+.timeline-box .tl-body-content-thumbnail {
+  float: left;
+  font-size: 0px;
+  width: 100px;
+  border: 1px solid #EEE;
+}
+
+.timeline-box .tl-body-content-right-col {
+  float: left;
+  padding-left:6px;
+}
+
+.timeline-box .tl-body-content-date {
+  font-size: 11px;
+  color: #999;
+}
+.timeline-box .tl-body-content-title {
+  padding: 5px 0;
+  font-size: 16px;
+}
+
+.timeline-box .tl-body-content-title a {
+  color: #36B;
+}
+
+.timeline-box .tl-body-content-desc {
+  font-size: 12px;
+  color: #333;
+}
+
+.timeline-box .tl-body-content-thumbnail img {
+  width: 100px;
+  height: 75px;
+}
