@@ -248,10 +248,10 @@
 .tl-roller .roller-tip {
     padding-right: 8px;
     float: left;
-    line-height: 90px;
+    line-height: 60px;
     font-size: 14px;
     font-weight: bold;
-    height: 90px;
+    height: 60px;
 }
 
 .tl-roller input {
@@ -279,4 +279,11 @@
 }
 .tl-roller .ios .dwww {
     padding: 0;
+}
+.tl-roller .ios .dww .dw-li {
+    font-size: 14px;
+}
+.tl-roller .ios .dwwol {
+    height:18px;
+    margin-top:-11px;
 }

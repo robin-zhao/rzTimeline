@@ -274,18 +274,24 @@
         
         $.mobiscroll.themes['ios'] = {
             rows: 3,
-            height: 30,
+            height: 20,
             showLabel: false
         };
         select_decade.mobiscroll().select({
             theme: 'ios',
             width: 80,
-            display: 'inline'
+            display: 'inline',
+            onChange : function(valueText) {
+                select_year.mobiscroll('setValue', valueText.slice(0, -1), true, 0.3);
+            }
         });
         select_year.mobiscroll().select({
             theme: 'ios',
             width: 80,
-            display: 'inline'
+            display: 'inline',
+            onChange : function(valueText) {
+                // select_decade.mobiscroll('setValue', Math.floor(parseInt(valueText)/10)*10+'s', true, 0.3);
+            }
         });
     }
     this.drawTimeAxis();
