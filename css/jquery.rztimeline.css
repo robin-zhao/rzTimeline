@@ -1,5 +1,5 @@
 .rztimeline-container {
-  height: 650px;
+  height: 350px;
   border: 1px solid #999;
   overflow-y: hidden;
   overflow: hidden;
@@ -239,9 +239,44 @@
   height: 75px;
 }
 
+.tl-roller {
+    margin-top: 12px;
+    padding-left: 4px;
+    height: 200px;
+}
+
+.tl-roller .roller-tip {
+    padding-right: 8px;
+    float: left;
+    line-height: 90px;
+    font-size: 14px;
+    font-weight: bold;
+    height: 90px;
+}
+
+.tl-roller input {
+    display: none;
+}
 .tl-roller .dw-select {
     float: left;
+    margin-right:4px;
 }
-.tl-roller .dwwr {
+.tl-roller .ios .dwwr {
     min-width: 0;
+    padding: 0;
+}
+
+.tl-roller .ios .dw {
+    min-width: 0px;
+    border: none;
+}
+
+.tl-roller .ios .dwc {
+    padding: 0;
+}
+.tl-roller .ios .dwwc {
+    padding: 0;
+}
+.tl-roller .ios .dwww {
+    padding: 0;
 }

@@ -66,14 +66,14 @@
     container.append(tl_middle_line);
     container.append(tl_body);
     container.append(tl_timescale);
-    // container.append(tl_slider);
+    container.append(tl_slider);
     if (opts.show_roller) {
-        var tl_roller = $('<div class="tl-roller"></div>');
+        var tl_roller = $('<div class="tl-roller"><label class="roller-tip">Travel to: </label></div>');
         var select_decade = $('<select class="select-decade"></select>');
         var select_year = $('<select class="select-year"></select>');
         tl_roller.append(select_decade);
         tl_roller.append(select_year);
-        container.append(tl_roller);
+        $(this).after(tl_roller);
     }
   
     var min_point = this.getPoints(opts.min_date); 
@@ -272,13 +272,18 @@
           
         }
         
+        $.mobiscroll.themes['ios'] = {
+            rows: 3,
+            height: 30,
+            showLabel: false
+        };
         select_decade.mobiscroll().select({
-            theme: 'ios7',
+            theme: 'ios',
             width: 80,
             display: 'inline'
         });
         select_year.mobiscroll().select({
-            theme: 'ios7',
+            theme: 'ios',
             width: 80,
             display: 'inline'
         });
