@@ -5,9 +5,11 @@
         <script src="js/jquery-ui-1.10.3.js"></script>
         <script src="js/jquery.mousewheel.js"></script>
         <script src="js/jquery.rztimeline.js"></script>
-        <script src="js/mobiscroll-2.3.1.full.min.js"></script>
+        <script src="js/mobiscroll.core.js"></script>
+        <script src="js/mobiscroll.select.js"></script>
+        <script src="js/mobiscroll.scroller.js"></script>
         <link href="css/jquery.rztimeline.css" rel="stylesheet" type="text/css" />
-        <link href="css/mobiscroll-2.3.1.full.min.css" rel="stylesheet" type="text/css" />
+        <link href="css/mobiscroll.scroller.css" rel="stylesheet" type="text/css" />
         <link href="css/jquery-ui.css" rel="stylesheet" type="text/css" />
         <link href="css/style.css" rel="stylesheet" type="text/css" />
         
@@ -16,7 +18,8 @@
             $("#my-timeline").timeline({
               width: 720,
               show_date_axis: true,
-              ratio: 60
+              ratio: 60,
+              show_roller: true
             });
           });
         </script>

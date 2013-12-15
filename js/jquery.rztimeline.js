@@ -66,7 +66,13 @@
     container.append(tl_middle_line);
     container.append(tl_body);
     container.append(tl_timescale);
-    container.append(tl_slider);
+    // container.append(tl_slider);
+    if (opts.show_roller) {
+        var tl_roller = $('<div class="tl-roller"></div>');
+        var select_year = $('<select class="select-year"></select>');
+        tl_roller.append(select_year);
+        container.append(tl_roller);
+    }
   
     var min_point = this.getPoints(opts.min_date); 
     var max_point = this.getPoints(opts.max_date);
@@ -220,9 +226,20 @@
           month_scale.css({left: i*ratio +'px'});
           
           if( scale_point % 12 === 0){
+            var year = this.getYearFromPoint(scale_point);
             month_scale.removeClass('scale-month').addClass('scale-year');
-            label_year = $('<div class="label-year">'+this.getYearFromPoint(scale_point)+'</div>');
+            label_year = $('<div class="label-year">'+year+'</div>');
             month_scale.append(label_year);
+            
+            if(year % 10 == 0) {
+                var decade = $('<optgroup label="'+Math.floor(year/10)*10+'s">')
+                select_year.append(decade);
+            }
+            if (typeof(decade) == 'undefined') {
+                var decade = $('<optgroup label="'+Math.floor(year/10)*10+'s">')
+            }
+            select_year.append(decade);
+            decade.append('<option value="'+year+'">'+year+'</option>');
           }
           tl_timeaxis.append(month_scale);
           
@@ -256,6 +273,13 @@
           }
           
         }
+        
+        select_year.scroller({
+            preset: 'select',
+            width: 80,
+            display: 'inline',
+            group: true
+        });
     }
     this.drawTimeAxis();
   
@@ -370,7 +394,8 @@
         min_date:'1906-01-13',
         max_date:'2001-11-05',
         ratio: 80,
-        show_date_axis: false
+        show_date_axis: false,
+        show_roller: false
     };
 })(jQuery);
 
