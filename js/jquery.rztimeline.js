@@ -69,7 +69,9 @@
     // container.append(tl_slider);
     if (opts.show_roller) {
         var tl_roller = $('<div class="tl-roller"></div>');
+        var select_decade = $('<select class="select-decade"></select>');
         var select_year = $('<select class="select-year"></select>');
+        tl_roller.append(select_decade);
         tl_roller.append(select_year);
         container.append(tl_roller);
     }
@@ -231,15 +233,11 @@
             label_year = $('<div class="label-year">'+year+'</div>');
             month_scale.append(label_year);
             
-            if(year % 10 == 0) {
-                var decade = $('<optgroup label="'+Math.floor(year/10)*10+'s">')
-                select_year.append(decade);
+            if(year % 10 == 0 || i == 0) {
+                var decade = $('<option value="'+Math.floor(year/10)*10+'">'+Math.floor(year/10)*10+'s</option>')
+                select_decade.append(decade);
             }
-            if (typeof(decade) == 'undefined') {
-                var decade = $('<optgroup label="'+Math.floor(year/10)*10+'s">')
-            }
-            select_year.append(decade);
-            decade.append('<option value="'+year+'">'+year+'</option>');
+            select_year.append('<option value="'+year+'">'+year+'</option>');
           }
           tl_timeaxis.append(month_scale);
           
@@ -274,11 +272,15 @@
           
         }
         
-        select_year.scroller({
-            preset: 'select',
+        select_decade.mobiscroll().select({
+            theme: 'ios7',
             width: 80,
-            display: 'inline',
-            group: true
+            display: 'inline'
+        });
+        select_year.mobiscroll().select({
+            theme: 'ios7',
+            width: 80,
+            display: 'inline'
         });
     }
     this.drawTimeAxis();
