@@ -5,15 +5,48 @@
  * https://github.com/robin-zhao/rzTimeline
  */
 
-(function ($, document, window) {
-    var monthNames = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"],
-        monthShortNames = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
+(function ( $, document, window ) {
+    var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
+        monthShortNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
+        publicMethod;
+        
+    // ****************
+    // HELPER FUNCTIONS
+    // ****************
+    /**
+     * Parses string formatted as YYYY-MM-DD to a Date object.
+     * If the supplied string does not match the format, an
+     * invalid Date (value NaN) is returned.
+     * @param {string} dateStringInRange format YYYY | YYYY-MM | YYYY-MM-DD, with year in
+     * range of 0000-9999, inclusive.
+     * @return {Date} Date object representing the string.
+     */
+    function parseISO8601(dateStringInRange) {
+        var isoExp = /^\s*(\d{4})-(\d\d)-(\d\d)\s*$/, 
+            date = new Date(NaN), 
+            month, 
+            parts = isoExp.exec(dateStringInRange);
+
+        if (parts) {
+            month = +parts[2];
+            date.setFullYear(parts[1], month - 1, parts[3]);
+            if (month != date.getMonth() + 1) {
+                date.setTime(NaN);
+            }
+        }
+        return date;
+    }
+
+  
+    function calPixelFromDate( date, minDate, maxDate, fullWidth ) {
+        
+    }
         
     // ****************
     // PUBLIC FUNCTIONS
     // Usage format: $.timeline.scrollToDate('1997-07-01');
     // ****************
-    $.fn.timeline = function(options, callback) {
+    publicMethod = $.fn.timeline = $.timeline = function(options, callback) {
         // Iterate each matched element.
         var $this = $(this);
     
