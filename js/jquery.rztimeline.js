@@ -22,14 +22,20 @@
      * @return {Date} Date object representing the string.
      */
     function parseISO8601(dateStringInRange) {
-        var isoExp = /^\s*(\d{4})-(\d\d)-(\d\d)\s*$/, 
-            date = new Date(NaN), 
+        var date = new Date(NaN), 
             month, 
-            parts = isoExp.exec(dateStringInRange);
+            parts = dateStringInRange.split('-');
 
         if (parts) {
-            month = +parts[2];
-            date.setFullYear(parts[1], month - 1, parts[3]);
+            if ( typeof (parts[1]) === 'undefined') {
+                parts[1] = 1;
+            }
+            if ( typeof (parts[2]) === 'undefined') {
+                parts[2] = 1;
+            }
+
+            month = +parts[1];
+            date.setFullYear(parts[0], month - 1, parts[2]);
             if (month != date.getMonth() + 1) {
                 date.setTime(NaN);
             }
@@ -37,11 +43,6 @@
         return date;
     }
 
-  
-    function calPixelFromDate( date, minDate, maxDate, fullWidth ) {
-        
-    }
-        
     // ****************
     // PUBLIC FUNCTIONS
     // Usage format: $.timeline.scrollToDate('1997-07-01');
@@ -58,7 +59,23 @@
         // Prepare to redraw.
         $this.empty();
         var that = $this;
-
+        
+        $this.screenWidth = opts.width;
+        $this.startDate = parseISO8601(opts.startDate);
+        $this.endDate = parseISO8601(opts.endDate);
+        $this.fullWidth = ( $this.endDate - $this.startDate ) / 86400000 * opts.dayWidth;
+        $this.paddingDays = Math.ceil($this.screenWidth / opts.dayWidth);
+        $this.paddingWidth = $this.paddingDays * opts.dayWidth;
+        $this.totalWidth = $this.fullWidth + 2 * $this.paddingWidth;
+        
+        $this.calPixelFromDate = function( date ) {
+            return (date - $this.startDate) / 86400000 * opts.dayWidth + $this.paddingWidth;
+        }
+        
+        $this.calPixelFromDateString = function( dateString ) {
+            var date = parseISO8601(dateString);
+            return $this.calPixelFromDate(date);
+        }
         // Get total points calculated by year and month part, used to draw scale.
         $this.getPoints = function(date_string) {
             var parts = date_string.split('-');
@@ -113,8 +130,8 @@
         container.append(tl_timescale);
         container.append(tl_slider);
 
-        var min_point = $this.getPoints(opts.min_date);
-        var max_point = $this.getPoints(opts.max_date);
+        var min_point = $this.getPoints(opts.startDate);
+        var max_point = $this.getPoints(opts.endDate);
 
         // Calculate scale ratio.
         var additional = 18;
@@ -320,7 +337,6 @@
             var screen_year = null;
             if (left === false) {
                 screen_year = $this.getYearFromPoint(min_point);
-                console.log(min_point);
             } else {
                 // formula: W / (max -min + 2a ) == (-init_left + w/2) / a
                 var init_left = $(that).width() / 2 - additional * tl_timescale.width() / (max_point - min_point + 2 * additional);
@@ -422,9 +438,9 @@
     // Plugin defaults
     $.fn.timeline.defaults = {
         width: "600",
-        min_date:'1906-01-13',
-        max_date:'2001-11-05',
-        ratio: 80,
+        startDate:'1906-01-13',
+        endDate:'2001-11-05',
+        dayWidth: 2,
         show_date_axis: false
     };
 })(jQuery);
