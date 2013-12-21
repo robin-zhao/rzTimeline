@@ -8,11 +8,18 @@
 (function ( $, document, window ) {
     var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
         monthShortNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
+        $timeline,
         publicMethod;
         
     // ****************
     // HELPER FUNCTIONS
     // ****************
+    
+    // Month is 1 based
+    function daysInMonth(month, year) {
+        return new Date(year, month, 0).getDate();
+    }
+
     /**
      * Parses string formatted as YYYY-MM-DD to a Date object.
      * If the supplied string does not match the format, an
@@ -49,7 +56,7 @@
     // ****************
     publicMethod = $.fn.timeline = $.timeline = function(options, callback) {
         // Iterate each matched element.
-        var $this = $(this);
+        var $this = $timeline = $(this);
     
         // Extend our default options with those provided.
         // Note that the first argument to extend is an empty
@@ -60,36 +67,46 @@
         $this.empty();
         var that = $this;
         
+        // Cache variables.
         $this.screenWidth = opts.width;
         $this.startDate = parseISO8601(opts.startDate);
         $this.endDate = parseISO8601(opts.endDate);
+        $this.startDateTime = $this.startDate.getTime();
+        $this.endDateTime = $this.endDate.getTime();
         $this.fullWidth = ( $this.endDate - $this.startDate ) / 86400000 * opts.dayWidth;
-        $this.paddingDays = Math.ceil($this.screenWidth / opts.dayWidth);
+        $this.screenDays = $this.paddingDays = Math.ceil($this.screenWidth / opts.dayWidth);
+        $this.totalStartDateTime = $this.startDateTime - 86400000 * $this.paddingDays;
+        $this.totalEndDateTime = $this.endDateTime + 86400000 * $this.paddingDays;
+        $this.totalStartDate = new Date($this.totalStartDateTime);
+        $this.totalEndDate = new Date($this.totalEndDateTime);
         $this.paddingWidth = $this.paddingDays * opts.dayWidth;
         $this.totalWidth = $this.fullWidth + 2 * $this.paddingWidth;
         
+        // Initial screen variables.
+        $this.screenStartDate = new Date($this.startDate - $this.screenDays / 2 * 86400000);
+        $this.screenStartDateTime = $this.screenStartDate.getTime();
+        $this.screenEndDateTime = $this.screenStartDateTime + 86400000 * $this.screenDays;
+        $this.screenEndDate = new Date($this.screenEndDateTime);
+        
+        $this.updateScreenDate = function() {
+            var scalePosition = parseInt(tl_timescale.css('left'));
+            $this.screenStartDate = $this.calDateFromPixel(-scalePosition);
+            $this.screenStartDateTime = $this.screenStartDate.getTime();
+            $this.screenEndDateTime = $this.screenStartDateTime + 86400000 * $this.screenDays;
+            $this.screenEndDate = new Date($this.screenEndDateTime);
+        };
+        
         $this.calPixelFromDate = function( date ) {
             return (date - $this.startDate) / 86400000 * opts.dayWidth + $this.paddingWidth;
-        }
+        };
+        
+        $this.calDateFromPixel = function( pixel ) {
+            return new Date($this.startDate + (pixel - $this.paddingWidth) / opts.dayWidth * 86400000);
+        };
         
         $this.calPixelFromDateString = function( dateString ) {
             var date = parseISO8601(dateString);
             return $this.calPixelFromDate(date);
-        }
-        // Get total points calculated by year and month part, used to draw scale.
-        $this.getPoints = function(date_string) {
-            var parts = date_string.split('-');
-            var points = 0;
-            points = 12 * parseInt(parts[0]) + parseInt(parts[1]) - 1;
-            return points;
-        };
-
-        // Get total points calculated by year and month and date part, used to draw scale.
-        $this.getDatePoints = function(date_string) {
-            var parts = date_string.split('-');
-            var points = 0;
-            points = 12 * parseInt(parts[0]) + parseInt(parts[1]) - 1 + 1 / 30 * (parseInt(parts[2]) - 1);
-            return points;
         };
 
         // Get String Month representation from a point value.
@@ -103,11 +120,12 @@
             return rtn;
         };
 
-        // Set width.
+        // Set widget width.
         $this.css({
             width : opts.width + 'px'
         });
-        // Add skeleton divs.
+
+        // Add skeleton HTML.
         var container = $('<div class="rztimeline-container"></div>');
         var tl_body = $('<div id="tl-body" class="timeline-box"></div>');
 
@@ -118,6 +136,8 @@
         tl_body.append(btn_prev).append(tl_body_container).append(btn_next).append(msg_box);
 
         var tl_timescale = $('<div id="tl-timescale"></div>');
+        $this.timeScale = tl_timescale;
+        tl_timescale.css('left', '-' + $this.calPixelFromDate($this.screenStartDate) + 'px');
         var tl_scaleband = $('<div class="tl-scaleband"></div>');
         var tl_timeaxis = $('<div class="tl-timeaxis"></div>');
         tl_timescale.append(tl_scaleband);
@@ -130,17 +150,9 @@
         container.append(tl_timescale);
         container.append(tl_slider);
 
-        var min_point = $this.getPoints(opts.startDate);
-        var max_point = $this.getPoints(opts.endDate);
-
-        // Calculate scale ratio.
-        var additional = 18;
-        //  months before and after timeline.
-        var diff = max_point - min_point + additional * 2;
-
         var ratio = opts.ratio;
         tl_timescale.css({
-            width : (diff * ratio ) + 'px'
+            width : $this.totalWidth + 'px'
         });
 
         // Adjust the timescale.
@@ -184,10 +196,10 @@
                 $('.tl-timescale-container').remove();
             }
             $.each(dates, function(i, n) {
-                var left = (that.getDatePoints(n.date) - min_point + additional) * ratio;
+                var left = that.calPixelFromDateString(n.date);
                 var key = $('.tl-timescale-container').length;
                 var timescale_row = key % 3;
-                var tl_timescale_container = $('<div class="tl-timescale-container timescale-row-' + timescale_row + '" title="' + n.title + '" key="' + key + '">' + n.date + '</div>');
+                var tl_timescale_container = $('<div rel= "' + n.date + '" class="tl-timescale-container timescale-row-' + timescale_row + '" title="' + n.title + '" key="' + key + '">' + n.date + '</div>');
                 tl_timescale_container.append('<span class="" title="' + n.title + '"></span>');
                 tl_timescale_container.css({
                     left : left + 'px'
@@ -201,7 +213,7 @@
             $(".tl-timescale-container").removeClass('current');
             $(".tl-timescale-container[key="+key+"]").addClass('current');
         };
-  
+        
         // Focus to a specific time point, provied by key value.
         $this.focusContent = function(key, direction) {
             var max_key = $this.getKeyCount() - 1;
@@ -217,9 +229,10 @@
                     btn_next.fadeIn();
                 }
                 var point_left = $('.tl-timescale-container[key="' + key + '"]').css('left');
-                var target_left = -(parseInt(point_left) - $(that).width() / 2);
+                var targetDateString = $('.tl-timescale-container[key="' + key + '"]').attr('rel');
+                var targetDate = parseISO8601(targetDateString);
                 // adjust timescale.
-                that.moveTimeScale(target_left);
+                publicMethod.scrollToDate(targetDate);
 
                 // Show current time point detail in top area.
                 if (direction == 'right') {
@@ -245,7 +258,7 @@
                     tl_body_container.find('.tl-body-content:nth-child(' + (key + 1) + ')').addClass('current').fadeIn();
                 }
                 // adjust slider.
-                that.moveSlider(target_left);
+                // that.moveSlider(target_left);
                 tl_body_container.attr('ref', key);
             }
         }; 
@@ -281,50 +294,61 @@
   
         // Draw Time Axis.
         $this.drawTimeAxis = function() {
-            var scale_point = 0;
-            // Draw month axis
-            for(var i=0; i<diff; i++){
-              scale_point = min_point - additional + i;
-              var month_scale = $('<div class="scale scale-month"></div>');
-              month_scale.append('<div class="label-month">' + monthShortNames[$this.getMonthFromPoint(scale_point)] + '</div>');
-              month_scale.css({left: i*ratio +'px'});
-              
-              if( scale_point % 12 === 0){
-                month_scale.removeClass('scale-month').addClass('scale-year');
-                label_year = $('<div class="label-year">'+$this.getYearFromPoint(scale_point)+'</div>');
-                month_scale.append(label_year);
-              }
-              tl_timeaxis.append(month_scale);
-              
-              // Draw date axis (Will be slow if the period is longer than 100 years).
-              if (opts.show_date_axis) {
-                  var num_of_date_axis_in_one_month = 1;
-                  if (opts.ratio >= 240) {
-                      num_of_date_axis_in_one_month = 30;
-                  }
-                  if (opts.ratio >= 120) {
-                      num_of_date_axis_in_one_month = 10;
-                  }
-                  else if (opts.ratio >= 40) {
-                      num_of_date_axis_in_one_month = 4;
-                  }
-                  else if (opts.ratio >= 20) {
-                      num_of_date_axis_in_one_month = 4;
-                  }
-                  else if (opts.ratio >= 8) {
-                      num_of_date_axis_in_one_month = 2;
-                  }
-                  else {
-                      num_of_date_axis_in_one_month = 1;
-                  }
-                  for (var j = 0; j < num_of_date_axis_in_one_month - 1; j ++) {
-                      var date_scale = $('<div class="scale scale-date"></div>');
-                      date_scale.css({left: i*ratio+(j+1)*ratio/num_of_date_axis_in_one_month +'px'});
-                      
-                      tl_timeaxis.append(date_scale);
-                  }
-              }
-              
+            var pointDateTime = $this.totalStartDateTime;
+
+            while (pointDateTime <= $this.totalEndDateTime) {
+                var pointDate = new Date(pointDateTime);
+                pointDate.setDate(1);
+                var currentPointDate = pointDate;
+                var monthString = monthShortNames[pointDate.getMonth()];
+                
+                var position = $this.calPixelFromDate(pointDate);
+                
+                var month_scale = $('<div class="scale scale-month"></div>');
+                month_scale.append('<div class="label-month">' + monthString + '</div>');
+                month_scale.css({
+                    left : position + 'px'
+                });
+                
+                if (pointDate.getMonth() == 0) {
+                    month_scale.removeClass('scale-month').addClass('scale-year');
+                    label_year = $('<div class="label-year">' + pointDate.getFullYear() + '</div>');
+                    month_scale.append(label_year);
+                }
+                
+                // Loop finish, goto next month
+                pointDate.setMonth(pointDate.getMonth() + 1);
+                pointDateTime = pointDate.getTime();
+                
+                // Draw date axis (Will be slow if the period is longer than 100 years).
+                if (opts.show_date_axis) {
+                    var nextMonthPosition = $this.calPixelFromDate(pointDate);
+                    
+                    var num_of_date_axis_in_one_month = 1;
+                    if (opts.dayWidth >= 8) {
+                        num_of_date_axis_in_one_month = daysInMonth(currentPointDate.getMonth() + 1, currentPointDate.getFullYear());
+                    } else if (opts.dayWidth >= 4) {
+                        num_of_date_axis_in_one_month = 10;
+                    } else if (opts.dayWidth >= 1) {
+                        num_of_date_axis_in_one_month = 4;
+                    } else if (opts.dayWidth >= 0.6) {
+                        num_of_date_axis_in_one_month = 3;
+                    } else if (opts.dayWidth >= 0.1) {
+                        num_of_date_axis_in_one_month = 2;
+                    } else {
+                        num_of_date_axis_in_one_month = 1;
+                    }
+                    for (var j = 0; j < num_of_date_axis_in_one_month - 1; j++) {
+                        var date_scale = $('<div class="scale scale-date"></div>');
+                        date_scale.css({
+                            left : position + (nextMonthPosition - position) * (j + 1) / num_of_date_axis_in_one_month + 'px'
+                        });
+
+                        tl_timeaxis.append(date_scale);
+                    }
+                }
+
+                tl_timeaxis.append(month_scale);
             }
         };
         
@@ -333,27 +357,20 @@
         var loaded_year = [];
 
         // Load more time points.
-        $this.loadMore = function(left) {
-            var screen_year = null;
-            if (left === false) {
-                screen_year = $this.getYearFromPoint(min_point);
-            } else {
-                // formula: W / (max -min + 2a ) == (-init_left + w/2) / a
-                var init_left = $(that).width() / 2 - additional * tl_timescale.width() / (max_point - min_point + 2 * additional);
-                // formula: (-init_left + w/2) / a == (- new_left + w/2) / (new_point - min_point + a)
-                var new_point = (-left + $(that).width() / 2) * additional / (-init_left + $(that).width() / 2) + min_point - additional;
-                screen_year = $this.getYearFromPoint(new_point);
-            }
-            if (-1 !== $.inArray(screen_year, loaded_year)) {
-                return;
-            }
-
+        $this.loadData = function() {
+            var fetchBufferDays = $this.screenDays;
+            var fetchStartDate = new Date($this.screenStartDate - fetchBufferDays * 86400000);
+            var fetchEndDate = new Date($this.screenEndDate + fetchBufferDays * 86400000);
+            
+            var fetchStartDateString = fetchStartDate.getFullYear() + '-' + (fetchStartDate.getMonth() + 1) + '-' + fetchStartDate.getDate();
+            var fetchEndDateString = fetchEndDate.getFullYear() + '-' + (fetchEndDate.getMonth() + 1) + '-' + fetchEndDate.getDate();
+            
             $.ajax({
                 url : 'server/fixture.php',
                 type : 'GET',
                 data : {
-                    start : screen_year - 1 + '-01-01',
-                    end : (screen_year + 2) + '-01-01'
+                    start : fetchStartDateString,
+                    end : fetchEndDateString
                     // , sleep:1
                 },
                 dataType : 'json',
@@ -364,22 +381,19 @@
                 $('.msg-box').html('').fadeOut();
                 var load_data = [];
                 $.each(data, function(i, n) {
-                    var parts = n.date.split('-');
-                    if (screen_year == parts[0]) {
+                    var dateDate = parseISO8601(n.date);
+                    if (dateDate >= $this.startDate && dateDate <= $this.endDate) {
                         load_data.push(n);
                     }
-                });
+                }); 
 
                 that.loadContent(load_data, false);
                 that.loadTimescale(load_data, false);
                 // Prevent duplicate event. @todo
                 that.bindEvents();
-                loaded_year.push(screen_year);
-                if (left === false) {
-                    that.focusContent(0);
-                    that.focusScale(0);
-                }
-            });
+                // that.focusContent(0);
+                // that.focusScale(0);
+            }); 
 
         }; 
 
@@ -392,36 +406,38 @@
             });
         }; 
   
-        $this.loadMore(false);
+        $this.loadData();
 
         // Make timeline draggable.
         tl_timescale.draggable({
             axis : "x",
             stop : function(event, ui) {
-                var final_left = ui.position.left;
-                var right = $this.width() - $(that).width() + ui.position.left;
-                if (ui.position.left > $(that).width() / 2 - additional * ratio) {
-                    $this.animate({
-                        left : "-=" + (ui.position.left - $(that).width() / 2 + additional * ratio)
-                    });
-                } else if (right < 0) {
-                    $this.animate({
-                        left : "+=" + (-right)
-                    });
-                }
-                that.moveSlider(final_left);
-                that.loadMore(final_left);
+                // var final_left = ui.position.left;
+                // var right = $this.width() - $(that).width() + ui.position.left;
+                // if (ui.position.left > $(that).width() / 2 - additional * ratio) {
+                    // $this.animate({
+                        // left : "-=" + (ui.position.left - $(that).width() / 2 + additional * ratio)
+                    // });
+                // } else if (right < 0) {
+                    // $this.animate({
+                        // left : "+=" + (-right)
+                    // });
+                // }
+                // that.moveSlider(final_left);
+                $this.updateScreenDate();
+                that.loadData();
             }
         }); 
 
         tl_timescale.mousewheel(function(event){
-            var new_position = parseInt($this.css('left')) + event.deltaY * event.deltaFactor / 2;
-            if (new_position < 0 && new_position > (-diff * ratio+opts.width)) {
-                $this.css('left', new_position+'px');
+            var new_position = parseInt($(this).css('left')) + event.deltaY * event.deltaFactor / 2;
+            if (new_position <= 0 && new_position > (-$this.fullWidth)) {
+                $(this).css('left', new_position+'px');
             }
             event.preventDefault();
         });
       
+      /*
         tl_slider.slider({
             min:0,
             max:diff + additional * 2,
@@ -430,9 +446,22 @@
                 var slider_ratio = ui.value / (diff + additional * 2);
                 var new_left = slider_ratio * tl_timescale.width() - $(that).width() / 2;
                 that.moveTimeScale(-new_left);
-                that.loadMore(-new_left);
+                that.loadData();
             }
         });
+        */
+    };
+    
+    publicMethod.scrollToDate = function(date) {
+        var $this = $timeline;
+        var targetPosition = $this.calPixelFromDate(date);
+        var scalePosition = - (targetPosition - $this.screenWidth / 2);
+        
+        $this.timeScale.animate({
+            left : scalePosition + 'px'
+        });
+        
+        $this.updateScreenDate();
     };
     
     // Plugin defaults
