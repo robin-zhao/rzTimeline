@@ -29,6 +29,7 @@
 
 #tl-timescale {
   height: 136px;
+  cursor: col-resize;
 }
 
 #tl-timescale .tl-scaleband {

@@ -67,6 +67,8 @@
         $this.empty();
         var that = $this;
         
+        $this.data = [];
+        
         // Cache variables.
         $this.screenWidth = opts.width;
         $this.startDate = parseISO8601(opts.startDate);
@@ -101,7 +103,7 @@
         };
         
         $this.calDateFromPixel = function( pixel ) {
-            return new Date($this.startDate + (pixel - $this.paddingWidth) / opts.dayWidth * 86400000);
+            return new Date($this.startDate.getTime() + (pixel - $this.paddingWidth) / opts.dayWidth * 86400000);
         };
         
         $this.calPixelFromDateString = function( dateString ) {
@@ -379,16 +381,20 @@
                 }
             }).done(function(data) {
                 $('.msg-box').html('').fadeOut();
-                var load_data = [];
+                var newData = [];
                 $.each(data, function(i, n) {
+                    if( -1 !== $.inArray(n.date, loadedDate) ) {
+                        return;
+                    }
                     var dateDate = parseISO8601(n.date);
                     if (dateDate >= $this.startDate && dateDate <= $this.endDate) {
-                        load_data.push(n);
+                        newData.push(n);
+                        loadedDate.push(n.date);
                     }
                 }); 
 
-                that.loadContent(load_data, false);
-                that.loadTimescale(load_data, false);
+                that.loadContent(newData, false);
+                that.loadTimescale(newData, false);
                 // Prevent duplicate event. @todo
                 that.bindEvents();
                 if(typeof(callback) == 'function') {
@@ -400,7 +406,7 @@
 
         // Bind the events after new timepoints are loaded.
         $this.bindEvents = function() {
-            $(".tl-timescale-container").bind('click', function() {
+            $(".tl-timescale-container").unbind('click').bind('click', function() {
                 var key = parseInt($(this).attr('key'));
                 $this.focusContent(key);
                 $this.focusScale(key);
