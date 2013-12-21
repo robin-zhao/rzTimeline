@@ -354,10 +354,10 @@
         
         $this.drawTimeAxis();
   
-        var loaded_year = [];
+        var loadedDate = [];
 
         // Load more time points.
-        $this.loadData = function() {
+        $this.loadData = function(callback) {
             var fetchBufferDays = $this.screenDays;
             var fetchStartDate = new Date($this.screenStartDate - fetchBufferDays * 86400000);
             var fetchEndDate = new Date($this.screenEndDate + fetchBufferDays * 86400000);
@@ -391,8 +391,9 @@
                 that.loadTimescale(load_data, false);
                 // Prevent duplicate event. @todo
                 that.bindEvents();
-                // that.focusContent(0);
-                // that.focusScale(0);
+                if(typeof(callback) == 'function') {
+                    callback();
+                }
             }); 
 
         }; 
@@ -406,7 +407,10 @@
             });
         }; 
   
-        $this.loadData();
+        $this.loadData(function(){
+            $this.focusContent(0);
+            $this.focusScale(0);
+        });
 
         // Make timeline draggable.
         tl_timescale.draggable({
