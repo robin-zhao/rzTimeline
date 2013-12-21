@@ -366,7 +366,7 @@
             var fetchEndDateString = fetchEndDate.getFullYear() + '-' + (fetchEndDate.getMonth() + 1) + '-' + fetchEndDate.getDate();
             
             $.ajax({
-                url : 'server/fixture.php',
+                url : 'server/fix.fixture.php',
                 type : 'GET',
                 data : {
                     start : fetchStartDateString,
