@@ -111,17 +111,6 @@
             return $this.calPixelFromDate(date);
         };
 
-        // Get String Month representation from a point value.
-        $this.getMonthFromPoint = function(points) {
-            var rtn = parseInt(points % 12);
-            return rtn;
-        };
-        // Get String Month representation from a point value.
-        $this.getYearFromPoint = function(points) {
-            var rtn = parseInt(points / 12);
-            return rtn;
-        };
-
         // Set widget width.
         $this.css({
             width : opts.width + 'px'
@@ -129,7 +118,9 @@
 
         // Add skeleton HTML.
         var container = $('<div class="rztimeline-container"></div>');
+        var tl_middle_line = $('<div id="tl-middle-line"></div>');
         var tl_body = $('<div id="tl-body" class="timeline-box"></div>');
+        var tlScaleBox = $('<div class="tl-scalebox"></div>');
 
         var btn_prev = $('<div class="btn-prev"></div>');
         var tl_body_container = $('<div class="tl-body-container"></div>');
@@ -144,39 +135,29 @@
         var tl_timeaxis = $('<div class="tl-timeaxis"></div>');
         tl_timescale.append(tl_scaleband);
         tl_timescale.append(tl_timeaxis);
-        var tl_slider = $('<div id="tl-slider"></div>');
-        var tl_middle_line = $('<div id="tl-middle-line"></div>');
-        $this.append(container);
-        container.append(tl_middle_line);
+        
+        // Slider
+        var tlFooter = $('<div class="tl-footer"></div>');
+        var tlSlider = $('<div class="tl-slider"></div>');
+        tlFooter.append(tlSlider);
+        
         container.append(tl_body);
-        container.append(tl_timescale);
-        container.append(tl_slider);
+        tlScaleBox.append(tl_middle_line);
+        tlScaleBox.append(tl_timescale);
+        container.append(tlScaleBox);
+        container.append(tlFooter);
+        $this.append(container);
 
         var ratio = opts.ratio;
         tl_timescale.css({
             width : $this.totalWidth + 'px'
         });
 
-        // Adjust the timescale.
-        $this.moveTimeScale = function(target_left) {
-            var current_left = parseInt(tl_timescale.css('left'));
-            if (isNaN(current_left)) {
-                current_left = 0;
-            }
-            var moved = target_left - current_left;
-            moved = (moved > 0 ? "+=" : "-=") + Math.abs(moved);
-            tl_timescale.animate({
-                left : moved
-            });
-        };
-
-        // Adjust the slider.
-        $this.moveSlider = function(target_left) {
-            var slide_ratio = Math.abs(target_left) / tl_timescale.width();
-            $("#tl-slider .ui-slider-handle").css({
-                left : (slide_ratio * 100) + '%'
-            });
-        };
+        $this.updateSliderPosition = function() {
+            var targetDate = new Date($this.screenStartDateTime + $this.screenDays * 86400000 / 2);
+            var targetYear = parseInt(targetDate.getFullYear());
+            tlSlider.slider('value', targetYear);
+        }
 
         // Load content to top area.
         $this.loadContent = function(dates, redraw) {
@@ -223,9 +204,11 @@
                 ;
             } else {
                 if (key == 0) {
-                    btn_prev.fadeOut();
+                    // btn_prev.fadeOut();
+                    $this.loadData();
                 } else if (key == max_key) {
-                    btn_next.fadeOut();
+                    // btn_next.fadeOut();
+                    $this.loadData();
                 } else {
                     btn_prev.fadeIn();
                     btn_next.fadeIn();
@@ -234,7 +217,9 @@
                 var targetDateString = $('.tl-timescale-container[key="' + key + '"]').attr('rel');
                 var targetDate = parseISO8601(targetDateString);
                 // adjust timescale.
-                publicMethod.scrollToDate(targetDate);
+                publicMethod.scrollToDate(targetDate, false, function(){
+                    $this.updateSliderPosition();
+                });
 
                 // Show current time point detail in top area.
                 if (direction == 'right') {
@@ -422,20 +407,13 @@
         tl_timescale.draggable({
             axis : "x",
             stop : function(event, ui) {
-                // var final_left = ui.position.left;
-                // var right = $this.width() - $(that).width() + ui.position.left;
-                // if (ui.position.left > $(that).width() / 2 - additional * ratio) {
-                    // $this.animate({
-                        // left : "-=" + (ui.position.left - $(that).width() / 2 + additional * ratio)
-                    // });
-                // } else if (right < 0) {
-                    // $this.animate({
-                        // left : "+=" + (-right)
-                    // });
-                // }
-                // that.moveSlider(final_left);
                 $this.updateScreenDate();
+                $this.updateSliderPosition();
                 that.loadData();
+            },
+            drag: function() {
+                $this.updateScreenDate();
+                $this.updateSliderPosition();
             }
         }); 
 
@@ -447,31 +425,47 @@
             event.preventDefault();
         });
       
-      /*
-        tl_slider.slider({
-            min:0,
-            max:diff + additional * 2,
-            value: additional,
+        tlSlider.slider({
+            min: $this.startDate.getFullYear(),
+            max: $this.endDate.getFullYear(),
+            value: $this.startDate.getFullYear(),
+            slide: function(event, ui) {
+                var year = ui.value.toString();
+                var targetDate = parseISO8601(year);
+                publicMethod.scrollToDate(targetDate, true);
+            },
             stop: function(event, ui) {
-                var slider_ratio = ui.value / (diff + additional * 2);
-                var new_left = slider_ratio * tl_timescale.width() - $(that).width() / 2;
-                that.moveTimeScale(-new_left);
                 that.loadData();
             }
         });
-        */
     };
     
-    publicMethod.scrollToDate = function(date) {
+    publicMethod.scrollToDate = function(date, noAnimate, callback) {
         var $this = $timeline;
         var targetPosition = $this.calPixelFromDate(date);
         var scalePosition = - (targetPosition - $this.screenWidth / 2);
         
-        $this.timeScale.animate({
-            left : scalePosition + 'px'
-        });
+        if (noAnimate) {
+            $this.timeScale.css({
+                left : scalePosition + 'px'
+            });
+            
+            $this.updateScreenDate();
+            if (typeof(callback) == 'function') {
+                callback();
+            }
+        }
+        else {
+            $this.timeScale.animate({
+                left : scalePosition + 'px'
+            }, function() {
+                $this.updateScreenDate();
+                if (typeof(callback) == 'function') {
+                    callback();
+                }
+            });
+        }
         
-        $this.updateScreenDate();
     };
     
     // Plugin defaults

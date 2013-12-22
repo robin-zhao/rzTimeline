@@ -1,5 +1,4 @@
 .rztimeline-container {
-  height: 350px;
   border: 1px solid #999;
   overflow-y: hidden;
   overflow: hidden;
@@ -15,14 +14,19 @@
   overflow: hidden;
 }
 
+.tl-scalebox {
+    position: relative;
+    overflow: hidden;
+}
+
 #tl-middle-line {
   z-index: 9998;
   left: 50%;
   background: #a36;
-  height: 100px;
+  height: 102px;
   width: 1px;
   position: absolute;
-  top: 181px;
+  top: -1px;
   box-shadow:0 1px 2px #a36;
   opacity: 0.75;
 }
@@ -132,9 +136,12 @@
   top: 12px;
 }
 
-#tl-slider {
-  height: 10px;
-  border: 1px solid #000;
+.tl-footer {
+    padding: 6px 20px;
+}
+
+.tl-slider {
+    
 }
 
 #arrow-left, #arrow-right {
