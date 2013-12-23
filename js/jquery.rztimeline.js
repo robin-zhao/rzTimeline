@@ -119,6 +119,7 @@
         // Add skeleton HTML.
         var container = $('<div class="rztimeline-container"></div>');
         var tl_middle_line = $('<div id="tl-middle-line"></div>');
+        var tlIndicator = $('<div class="tl-indicator"></div>');
         var tl_body = $('<div id="tl-body" class="timeline-box"></div>');
         var tlScaleBox = $('<div class="tl-scalebox"></div>');
 
@@ -146,6 +147,7 @@
         
         container.append(tl_body);
         tlScaleBox.append(tl_middle_line);
+        tlScaleBox.append(tlIndicator);
         tlScaleBox.append(tl_timescale);
         container.append(tlScaleBox);
         container.append(tlFooter);
@@ -186,8 +188,13 @@
                 var timescale_row = key % 3;
                 var tl_timescale_container = $('<div rel= "' + n.date + '" class="tl-timescale-container timescale-row-' + timescale_row + '" title="' + n.title + '" key="' + key + '"></div>');
                 var content = n.title + ', ' + monthNames[parseISO8601(n.date).getMonth()] + ' ' + parseISO8601(n.date).getDate() + ', ' + parseISO8601(n.date).getFullYear();
-                tl_timescale_container.append('<div class="scale-thumbnail"><img src="' + n.thumbnail_small + '" /></div>');
-                tl_timescale_container.append('<div class="scale-content" title="' + n.title + '">' + content + '</div>');
+                
+                var flag = $('<div class="flag"></div>');
+                flag.append('<div class="scale-thumbnail"><img src="' + n.thumbnail_small + '" /></div>');
+                flag.append('<div class="scale-content" title="' + n.title + '">' + content + '</div>');
+                tl_timescale_container.append(flag);
+                tl_timescale_container.append('<div class="line"></div>');
+                tl_timescale_container.append('<div class="dot"></div>');
                 tl_timescale_container.css({
                     left : left + 'px'
                 });

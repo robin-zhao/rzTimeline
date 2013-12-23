@@ -6,19 +6,23 @@ html, body {
 }
 
 .container {
-    width: 80%;
+    width: 90%;
     margin: auto;
 }
 
 #my-timeline {
     box-shadow: 0 0 3px #999;
+    float: left;
+    margin-right:10px;
 }
 
-li.done {
-  color: green;
+#todo {
+  float:left;  
 }
-li.xgao {
-  margin-top:20px;
-  border-top:1px dashed #999;
-  padding-top:20px;
+#todo li {
+  font-size:14px;
+}
+#todo li.done {
+  color: green;
+  text-decoration:line-through;
 }
