@@ -23,7 +23,7 @@
   z-index: 9998;
   left: 50%;
   background: #a36;
-  height: 102px;
+  height: 162px;
   width: 1px;
   position: absolute;
   top: -1px;
@@ -32,12 +32,12 @@
 }
 
 #tl-timescale {
-  height: 136px;
+  height: 200px;
   cursor: col-resize;
 }
 
 #tl-timescale .tl-scaleband {
-  height: 100px;
+  height: 160px;
   position: relative;
   background: #EEE;
   overflow: hidden;
@@ -45,7 +45,7 @@
 }
 
 #tl-timescale .tl-timeaxis {
-  height: 36px;
+  height: 40px;
   border-top: 1px solid #000;
   background-color: #fff;
 }
@@ -55,16 +55,17 @@
   cursor:pointer;
   float: left;
   position: absolute;
-  width: 80px;
+  width: 160px;
   background: #eee;
-  height: 26px;
+  height: 46px;
   border: 1px solid #bbb;
   border-top-right-radius:3px;
   border-bottom-right-radius:3px;
+  color: #666;
 }
 .tl-timescale-container:before {
   content:'';
-  height:38px;
+  height:58px;
   width:1px;
   position:absolute;
   top:-6px;
@@ -77,11 +78,27 @@
   background: #fff;
   box-shadow:0 0 1px #999;
   z-index: 9;
+  color: #333;
 }
 .tl-timescale-container:hover {
   background: #fff;
   box-shadow:0 0 1px #999;
   z-index: 10;
+  color: #333;
+}
+
+.tl-timescale-container .scale-thumbnail {
+  float: left;
+  width: 22px;
+  padding-left: 3px;
+  padding-top:3px;
+}
+
+.tl-timescale-container .scale-content {
+  float: left;
+  width: 133px;
+  padding-left:2px;
+  padding-top: 2px;
 }
 
 .timescale-row-0 {
@@ -89,11 +106,11 @@
 }
 
 .timescale-row-1 {
-  top: 36px;
+  top: 56px;
 }
 
 .timescale-row-2 {
-  top: 69px;
+  top: 109px;
 }
 
 .scale {
@@ -137,11 +154,25 @@
 }
 
 .tl-footer {
-    padding: 6px 20px;
+    padding: 26px 20px 12px 20px;
+    background: #f9f9f9;
+    border-top: 1px solid #eee;
 }
 
-.tl-slider {
-    
+.tl-sliderflaglabel {
+  top:-21px;
+  text-align:center;
+  margin-left:-12px;
+  width:40px;
+  background: url(../images/timeline_flag.png) 0 0 no-repeat;
+  height:20px;
+  line-height:16px; 
+  color:#FFF;
+  position:absolute;
+}
+
+.tl-slider .ui-slider-handle:focus{
+    outline: none;
 }
 
 #arrow-left, #arrow-right {

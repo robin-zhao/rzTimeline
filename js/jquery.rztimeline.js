@@ -138,8 +138,11 @@
         
         // Slider
         var tlFooter = $('<div class="tl-footer"></div>');
-        var tlSlider = $('<div class="tl-slider"></div>');
+            tlSliderFlagLabel = $('<div class="tl-sliderflaglabel"></div>');
+            tlSlider = $('<div class="tl-slider"></div>');
+            tlSliderTicks = $('<div class="tl-sliderticks"></div>');
         tlFooter.append(tlSlider);
+        tlFooter.append(tlSliderTicks);
         
         container.append(tl_body);
         tlScaleBox.append(tl_middle_line);
@@ -148,7 +151,6 @@
         container.append(tlFooter);
         $this.append(container);
 
-        var ratio = opts.ratio;
         tl_timescale.css({
             width : $this.totalWidth + 'px'
         });
@@ -157,7 +159,7 @@
             var targetDate = new Date($this.screenStartDateTime + $this.screenDays * 86400000 / 2);
             var targetYear = parseInt(targetDate.getFullYear());
             tlSlider.slider('value', targetYear);
-        }
+        };
 
         // Load content to top area.
         $this.loadContent = function(dates, redraw) {
@@ -182,8 +184,10 @@
                 var left = that.calPixelFromDateString(n.date);
                 var key = $('.tl-timescale-container').length;
                 var timescale_row = key % 3;
-                var tl_timescale_container = $('<div rel= "' + n.date + '" class="tl-timescale-container timescale-row-' + timescale_row + '" title="' + n.title + '" key="' + key + '">' + n.date + '</div>');
-                tl_timescale_container.append('<span class="" title="' + n.title + '"></span>');
+                var tl_timescale_container = $('<div rel= "' + n.date + '" class="tl-timescale-container timescale-row-' + timescale_row + '" title="' + n.title + '" key="' + key + '"></div>');
+                var content = n.title + ', ' + monthNames[parseISO8601(n.date).getMonth()] + ' ' + parseISO8601(n.date).getDate() + ', ' + parseISO8601(n.date).getFullYear();
+                tl_timescale_container.append('<div class="scale-thumbnail"><img src="' + n.thumbnail_small + '" /></div>');
+                tl_timescale_container.append('<div class="scale-content" title="' + n.title + '">' + content + '</div>');
                 tl_timescale_container.css({
                     left : left + 'px'
                 });
@@ -342,15 +346,22 @@
         $this.drawTimeAxis();
   
         var loadedDate = [];
+        var loadedPeriod = [];
 
         // Load more time points.
         $this.loadData = function(callback) {
             var fetchBufferDays = $this.screenDays;
-            var fetchStartDate = new Date($this.screenStartDate - fetchBufferDays * 86400000);
-            var fetchEndDate = new Date($this.screenEndDate + fetchBufferDays * 86400000);
+            var fetchStartDate = new Date($this.screenStartDateTime - fetchBufferDays * 86400000);
+            var fetchEndDate = new Date($this.screenEndDateTime + fetchBufferDays * 86400000);
             
             var fetchStartDateString = fetchStartDate.getFullYear() + '-' + (fetchStartDate.getMonth() + 1) + '-' + fetchStartDate.getDate();
             var fetchEndDateString = fetchEndDate.getFullYear() + '-' + (fetchEndDate.getMonth() + 1) + '-' + fetchEndDate.getDate();
+            
+            for (x in loadedPeriod) {
+                if ($this.screenStartDateTime >= loadedPeriod[x].start && $this.screenEndDateTime <= loadedPeriod[x].end) {
+                    return;
+                }
+            }
             
             $.ajax({
                 url : 'server/fix.fixture.php',
@@ -365,6 +376,8 @@
                     $('.msg-box').html('Loading...').show();
                 }
             }).done(function(data) {
+                loadedPeriod.push({'start': fetchStartDate.getTime(), 'end': fetchEndDate.getTime()});
+                
                 $('.msg-box').html('').fadeOut();
                 var newData = [];
                 $.each(data, function(i, n) {
@@ -377,10 +390,9 @@
                         loadedDate.push(n.date);
                     }
                 }); 
-
+                
                 that.loadContent(newData, false);
                 that.loadTimescale(newData, false);
-                // Prevent duplicate event. @todo
                 that.bindEvents();
                 if(typeof(callback) == 'function') {
                     callback();
@@ -422,22 +434,35 @@
             if (new_position <= 0 && new_position > (-$this.fullWidth)) {
                 $(this).css('left', new_position+'px');
             }
+            
+            $this.updateScreenDate();
+            $this.updateSliderPosition();
+            $this.loadData();
             event.preventDefault();
         });
       
+        tlSliderFlagLabel.html($this.startDate.getFullYear());
+        
         tlSlider.slider({
             min: $this.startDate.getFullYear(),
             max: $this.endDate.getFullYear(),
             value: $this.startDate.getFullYear(),
+            step: 1,
             slide: function(event, ui) {
                 var year = ui.value.toString();
                 var targetDate = parseISO8601(year);
                 publicMethod.scrollToDate(targetDate, true);
+                tlSliderFlagLabel.html(ui.value);
             },
             stop: function(event, ui) {
                 that.loadData();
+            },
+            change: function(event, ui) {
+                tlSliderFlagLabel.html(ui.value);
             }
         });
+        
+        tlSlider.find('.ui-slider-handle').append(tlSliderFlagLabel);
     };
     
     publicMethod.scrollToDate = function(date, noAnimate, callback) {

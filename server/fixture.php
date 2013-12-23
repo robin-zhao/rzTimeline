@@ -28,6 +28,7 @@ while ($time <= $time_end) {
         'title' => 'Lorem Ipsum ' . uniqid(),
         'desc' => 'A very long description here.',
         'thumbnail' => 'http://placehold.it/100x75',
+        'thumbnail_small' => 'http://placehold.it/22x22',
         'link' => 'http://google.com',
     );
     
