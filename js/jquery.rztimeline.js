@@ -76,7 +76,11 @@
         $this.startDateTime = $this.startDate.getTime();
         $this.endDateTime = $this.endDate.getTime();
         $this.fullWidth = ( $this.endDate - $this.startDate ) / 86400000 * opts.dayWidth;
-        $this.screenDays = $this.paddingDays = Math.ceil($this.screenWidth / opts.dayWidth);
+        $this.screenDays = Math.ceil($this.screenWidth / opts.dayWidth);
+        $this.paddingDays = $this.screenDays;
+        if (opts.dayWidth > 10) {
+            $this.paddingDays = 2 * $this.screenDays;
+        }
         $this.totalStartDateTime = $this.startDateTime - 86400000 * $this.paddingDays;
         $this.totalEndDateTime = $this.endDateTime + 86400000 * $this.paddingDays;
         $this.totalStartDate = new Date($this.totalStartDateTime);
@@ -216,10 +220,10 @@
             } else {
                 if (key == 0) {
                     // btn_prev.fadeOut();
-                    $this.loadData();
+                    $this.loadData(true);
                 } else if (key == max_key) {
                     // btn_next.fadeOut();
-                    $this.loadData();
+                    $this.loadData(true);
                 } else {
                     btn_prev.fadeIn();
                     btn_next.fadeIn();
@@ -292,9 +296,13 @@
   
         // Draw Time Axis.
         $this.drawTimeAxis = function() {
-            var pointDateTime = $this.totalStartDateTime;
+            // var pointDateTime = $this.totalStartDateTime;
+            var pointDateTime = $this.screenStartDateTime - 86400000 * $this.paddingDays;
+            
+            tl_timeaxis.html('');
 
-            while (pointDateTime <= $this.totalEndDateTime) {
+            // while (pointDateTime <= $this.totalEndDateTime) {
+            while (pointDateTime <= ($this.screenEndDateTime + 86400000 * $this.paddingDays)) {
                 var pointDate = new Date(pointDateTime);
                 pointDate.setDate(1);
                 var currentPointDate = pointDate;
@@ -356,19 +364,23 @@
         var loadedPeriod = [];
 
         // Load more time points.
-        $this.loadData = function(callback) {
-            var fetchBufferDays = $this.screenDays;
+        $this.loadData = function(force, callback) {
+            var fetchBufferDays = $this.paddingDays;
             var fetchStartDate = new Date($this.screenStartDateTime - fetchBufferDays * 86400000);
             var fetchEndDate = new Date($this.screenEndDateTime + fetchBufferDays * 86400000);
             
             var fetchStartDateString = fetchStartDate.getFullYear() + '-' + (fetchStartDate.getMonth() + 1) + '-' + fetchStartDate.getDate();
             var fetchEndDateString = fetchEndDate.getFullYear() + '-' + (fetchEndDate.getMonth() + 1) + '-' + fetchEndDate.getDate();
             
-            for (x in loadedPeriod) {
-                if ($this.screenStartDateTime >= loadedPeriod[x].start && $this.screenEndDateTime <= loadedPeriod[x].end) {
-                    return;
+            if (!force) {
+                for (x in loadedPeriod) {
+                    if ($this.screenStartDateTime >= loadedPeriod[x].start && $this.screenEndDateTime <= loadedPeriod[x].end) {
+                        return;
+                    }
                 }
             }
+            
+            $this.drawTimeAxis();
             
             $.ajax({
                 url : 'server/fix.fixture.php',
@@ -417,7 +429,7 @@
             });
         }; 
   
-        $this.loadData(function(){
+        $this.loadData(false, function(){
             $this.focusContent(0);
             $this.focusScale(0);
         });
@@ -428,6 +440,7 @@
             stop : function(event, ui) {
                 $this.updateScreenDate();
                 $this.updateSliderPosition();
+                // $this.drawTimeAxis();
                 that.loadData();
             },
             drag: function() {
@@ -437,7 +450,7 @@
         }); 
 
         tl_timescale.mousewheel(function(event){
-            var new_position = parseInt($(this).css('left')) + event.deltaY * event.deltaFactor / 2;
+            var new_position = parseInt($(this).css('left')) + event.deltaY * event.deltaFactor;
             if (new_position <= 0 && new_position > (-$this.fullWidth)) {
                 $(this).css('left', new_position+'px');
             }
@@ -486,6 +499,7 @@
             if (typeof(callback) == 'function') {
                 callback();
             }
+            $this.drawTimeAxis();
         }
         else {
             $this.timeScale.animate({
@@ -495,6 +509,7 @@
                 if (typeof(callback) == 'function') {
                     callback();
                 }
+                $this.drawTimeAxis();
             });
         }
         

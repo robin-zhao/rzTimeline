@@ -55,9 +55,13 @@
 }
 
 #tl-timescale .tl-timeaxis {
-  height: 40px;
-  border-top: 1px solid #000;
+  height: 50px;
   background-color: #fff;
+  z-index:1000;
+  position:absolute;
+  top:151px;
+  box-shadow: -1px -1px 7px rgba(0,0,0,0.1);
+  width:100%;
 }
 
 .tl-timescale-container {
@@ -112,6 +116,10 @@
   z-index: 22;
 }
 
+.tl-timescale-container:hover .line {
+  background-color: #A90B0B;
+}
+
 .tl-timescale-container .scale-thumbnail {
   float: left;
   width: 22px;
@@ -141,13 +149,13 @@
 .scale {
   height: 4px;
   width: 1px;
-  background: #000;
+  background: #666;
   position: absolute;
   font-size: 0px;
 }
 .scale .label-month {
     position: absolute;
-    top:5px;
+    top:12px;
     left:-8px;
     width: auto;
     height: auto;
@@ -155,7 +163,7 @@
 }
 .scale .label-year {
     position: absolute;
-    top:18px;
+    top:24px;
     left:-12px;
     width: auto;
     height: auto;
@@ -163,13 +171,18 @@
     font-weight: bold;
 }
 .scale-date {
-  height: 2px;
+  height: 6px;
 }
 .scale-month {
-  height: 4px;
+  height: 10px;
+  background: #333;
+  width:2px;
+  margin-left:-1px;
 }
 .scale-year {
-  height: 10px;
+  height: 14px;
+  width:2px;
+  margin-left:-1px;
 }
 
 .scale-decade span {
@@ -287,10 +300,14 @@
 .timeline-box .tl-body-content-title {
   padding: 5px 0;
   font-size: 16px;
+  line-height: 16px;
 }
 
 .timeline-box .tl-body-content-title a {
+  line-height: 24px;
+  border-bottom: 1px solid #a3bcde;
   color: #36B;
+  text-decoration: none;
 }
 
 .timeline-box .tl-body-content-desc {
