@@ -63,14 +63,22 @@
         // object – this is to keep from overriding our "defaults" object.
         var opts = $.extend({}, $.fn.timeline.defaults, options);
         
+        $this.opts = opts;
+        
         // Prepare to redraw.
         $this.empty();
         var that = $this;
         
         $this.data = [];
         
+        // Set widget width.
+        $this.css({
+            width : opts.width
+        });
+        
         // Cache variables.
-        $this.screenWidth = opts.width;
+        $this.screenWidth = $this.width();
+        console.log($this.screenWidth);
         $this.startDate = parseISO8601(opts.startDate);
         $this.endDate = parseISO8601(opts.endDate);
         $this.startDateTime = $this.startDate.getTime();
@@ -115,11 +123,6 @@
             return $this.calPixelFromDate(date);
         };
 
-        // Set widget width.
-        $this.css({
-            width : opts.width + 'px'
-        });
-
         // Add skeleton HTML.
         var container = $('<div class="rztimeline-container"></div>');
         var tl_middle_line = $('<div id="tl-middle-line"></div>');
@@ -156,6 +159,10 @@
         container.append(tlScaleBox);
         container.append(tlFooter);
         $this.append(container);
+        
+        if (opts.showDetail != 'always') {
+            tl_body.hide();
+        }
 
         tl_timescale.css({
             width : $this.totalWidth + 'px'
@@ -327,31 +334,29 @@
                 pointDateTime = pointDate.getTime();
                 
                 // Draw date axis (Will be slow if the period is longer than 100 years).
-                if (opts.show_date_axis) {
-                    var nextMonthPosition = $this.calPixelFromDate(pointDate);
-                    
-                    var num_of_date_axis_in_one_month = 1;
-                    if (opts.dayWidth >= 8) {
-                        num_of_date_axis_in_one_month = daysInMonth(currentPointDate.getMonth() + 1, currentPointDate.getFullYear());
-                    } else if (opts.dayWidth >= 4) {
-                        num_of_date_axis_in_one_month = 10;
-                    } else if (opts.dayWidth >= 1) {
-                        num_of_date_axis_in_one_month = 4;
-                    } else if (opts.dayWidth >= 0.6) {
-                        num_of_date_axis_in_one_month = 3;
-                    } else if (opts.dayWidth >= 0.1) {
-                        num_of_date_axis_in_one_month = 2;
-                    } else {
-                        num_of_date_axis_in_one_month = 1;
-                    }
-                    for (var j = 0; j < num_of_date_axis_in_one_month - 1; j++) {
-                        var date_scale = $('<div class="scale scale-date"></div>');
-                        date_scale.css({
-                            left : position + (nextMonthPosition - position) * (j + 1) / num_of_date_axis_in_one_month + 'px'
-                        });
+                var nextMonthPosition = $this.calPixelFromDate(pointDate);
+                
+                var num_of_date_axis_in_one_month = 1;
+                if (opts.dayWidth >= 8) {
+                    num_of_date_axis_in_one_month = daysInMonth(currentPointDate.getMonth() + 1, currentPointDate.getFullYear());
+                } else if (opts.dayWidth >= 4) {
+                    num_of_date_axis_in_one_month = 10;
+                } else if (opts.dayWidth >= 1) {
+                    num_of_date_axis_in_one_month = 4;
+                } else if (opts.dayWidth >= 0.6) {
+                    num_of_date_axis_in_one_month = 3;
+                } else if (opts.dayWidth >= 0.1) {
+                    num_of_date_axis_in_one_month = 2;
+                } else {
+                    num_of_date_axis_in_one_month = 1;
+                }
+                for (var j = 0; j < num_of_date_axis_in_one_month - 1; j++) {
+                    var date_scale = $('<div class="scale scale-date"></div>');
+                    date_scale.css({
+                        left : position + (nextMonthPosition - position) * (j + 1) / num_of_date_axis_in_one_month + 'px'
+                    });
 
-                        tl_timeaxis.append(date_scale);
-                    }
+                    tl_timeaxis.append(date_scale);
                 }
 
                 tl_timeaxis.append(month_scale);
@@ -426,6 +431,9 @@
                 var key = parseInt($(this).attr('key'));
                 $this.focusContent(key);
                 $this.focusScale(key);
+                if (opts.showDetail == 'click') {
+	                tl_body.slideDown();
+                }
             });
         }; 
   
@@ -485,6 +493,15 @@
         tlSlider.find('.ui-slider-handle').append(tlSliderFlagLabel);
     };
     
+    publicMethod.resize = function() {
+    	var $this = $timeline;
+    	// Cache variables.
+        $this.screenWidth = $this.width();
+        $this.screenDays = Math.ceil($this.screenWidth / $this.opts.dayWidth);
+        
+        $this.updateScreenDate();
+    };
+    
     publicMethod.scrollToDate = function(date, noAnimate, callback) {
         var $this = $timeline;
         var targetPosition = $this.calPixelFromDate(date);
@@ -521,7 +538,7 @@
         startDate:'1906-01-13',
         endDate:'2001-11-05',
         dayWidth: 2,
-        show_date_axis: false
+        showDetail: 'always' // always|click|never
     };
 })(jQuery);
 

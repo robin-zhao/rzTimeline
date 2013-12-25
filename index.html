@@ -12,9 +12,13 @@
         <script>
           $(document).ready(function(){
             $("#my-timeline").timeline({
-              width: 720,
-              show_date_axis: true,
-              dayWidth: 10
+              width: '90%',
+              dayWidth: 10,
+              showDetail: 'click'
+            });
+            
+            $(window).resize(function(){
+            	$.fn.timeline.resize();
             });
           });
         </script>
