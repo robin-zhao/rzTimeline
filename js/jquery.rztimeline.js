@@ -372,6 +372,8 @@
             var fetchStartDateString = fetchStartDate.getFullYear() + '-' + (fetchStartDate.getMonth() + 1) + '-' + fetchStartDate.getDate();
             var fetchEndDateString = fetchEndDate.getFullYear() + '-' + (fetchEndDate.getMonth() + 1) + '-' + fetchEndDate.getDate();
             
+            $this.drawTimeAxis();
+            
             if (!force) {
                 for (x in loadedPeriod) {
                     if ($this.screenStartDateTime >= loadedPeriod[x].start && $this.screenEndDateTime <= loadedPeriod[x].end) {
@@ -379,8 +381,6 @@
                     }
                 }
             }
-            
-            $this.drawTimeAxis();
             
             $.ajax({
                 url : 'server/fix.fixture.php',
