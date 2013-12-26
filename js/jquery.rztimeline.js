@@ -314,11 +314,12 @@
                 pointDate.setDate(1);
                 var currentPointDate = pointDate;
                 var monthString = monthShortNames[pointDate.getMonth()];
+                var dateString = pointDate.getDate();
                 
                 var position = $this.calPixelFromDate(pointDate);
                 
                 var month_scale = $('<div class="scale scale-month"></div>');
-                month_scale.append('<div class="label-month">' + monthString + '</div>');
+                month_scale.append('<div class="label-month">' + monthString + ' ' + dateString + '</div>');
                 month_scale.css({
                     left : position + 'px'
                 });
@@ -388,7 +389,7 @@
             }
             
             $.ajax({
-                url : 'server/fixture.php',
+                url : 'server/fix.fixture.php',
                 type : 'GET',
                 data : {
                     start : fetchStartDateString,

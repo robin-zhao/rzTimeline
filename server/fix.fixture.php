@@ -1,5 +1,5 @@
 <?php
-$fix_data = file_get_contents('./fixture.1800-2020.json');
+$fix_data = file_get_contents('./fixture.1895-2010.json');
 $fix_arr = json_decode($fix_data, true);
 
 // GET parameters.

@@ -32,7 +32,7 @@ while ($time <= $time_end) {
         'link' => 'http://google.com',
     );
     
-    $time += rand(1, 8) * 3600 * 24;
+    $time += rand(2, 5) * 3600 * 24;
 }
 $result = json_encode($data);
 header('Content-Type: application/json');
