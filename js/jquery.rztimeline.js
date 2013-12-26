@@ -85,7 +85,7 @@
         $this.endDateTime = $this.endDate.getTime();
         $this.fullWidth = ( $this.endDate - $this.startDate ) / 86400000 * opts.dayWidth;
         $this.screenDays = Math.ceil($this.screenWidth / opts.dayWidth);
-        $this.paddingDays = $this.screenDays;
+        $this.paddingDays = 2 * $this.screenDays;
         if (opts.dayWidth > 10) {
             $this.paddingDays = 2 * $this.screenDays;
         }
@@ -413,7 +413,9 @@
                         newData.push(n);
                         loadedDate.push(n.date);
                     }
-                }); 
+                });
+                
+                that.data = $.merge(that.data, newData);
                 
                 that.loadContent(newData, false);
                 that.loadTimescale(newData, false);
@@ -446,9 +448,17 @@
         tl_timescale.draggable({
             axis : "x",
             stop : function(event, ui) {
+            	if ($this.screenStartDateTime < ( $this.startDateTime) - $this.screenDays / 2 * 86400000 ) {
+            		publicMethod.scrollToDate($this.startDate);
+            		return;
+            	}
+            	if ($this.screenEndDateTime > ( $this.endDateTime) + $this.screenDays / 2 * 86400000 ) {
+            		publicMethod.scrollToDate($this.endDate);
+            		return;
+            	}
+            	
                 $this.updateScreenDate();
                 $this.updateSliderPosition();
-                // $this.drawTimeAxis();
                 that.loadData();
             },
             drag: function() {
@@ -458,8 +468,21 @@
         }); 
 
         tl_timescale.mousewheel(function(event){
+        	var startPosition = parseInt($(this).css('left'));
+        	var endPosition = startPosition + $this.screenWidth;
+        	
             var new_position = parseInt($(this).css('left')) + event.deltaY * event.deltaFactor;
-            if (new_position <= 0 && new_position > (-$this.fullWidth)) {
+            
+            if ((startPosition - $this.screenWidth / 2) <= -$this.calPixelFromDate($this.startDate) && (startPosition - $this.screenWidth / 2) >= -$this.calPixelFromDate($this.endDate)) {
+            	
+            	if ((new_position - $this.screenWidth / 2) > -$this.calPixelFromDate($this.startDate)) {
+	            	new_position = $this.screenWidth / 2 - $this.calPixelFromDate($this.startDate);
+	            }
+	            
+            	if ((new_position - $this.screenWidth / 2) < -$this.calPixelFromDate($this.endDate)) {
+	            	new_position = $this.screenWidth / 2 - $this.calPixelFromDate($this.endDate);
+	            }
+	            
                 $(this).css('left', new_position+'px');
             }
             
@@ -498,8 +521,23 @@
     	// Cache variables.
         $this.screenWidth = $this.width();
         $this.screenDays = Math.ceil($this.screenWidth / $this.opts.dayWidth);
+        $this.paddingDays = $this.screenDays;
+        if ($this.opts.dayWidth > 10) {
+            $this.paddingDays = 2 * $this.screenDays;
+        }
+        $this.totalStartDateTime = $this.startDateTime - 86400000 * $this.paddingDays;
+        $this.totalEndDateTime = $this.endDateTime + 86400000 * $this.paddingDays;
+        $this.totalStartDate = new Date($this.totalStartDateTime);
+        $this.totalEndDate = new Date($this.totalEndDateTime);
+        $this.paddingWidth = $this.paddingDays * $this.opts.dayWidth;
+        $this.totalWidth = $this.fullWidth + 2 * $this.paddingWidth;
         
         $this.updateScreenDate();
+        
+        $this.loadContent($this.data, true);
+        $this.loadTimescale($this.data, true);
+        
+        $this.bindEvents();
     };
     
     publicMethod.scrollToDate = function(date, noAnimate, callback) {

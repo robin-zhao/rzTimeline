@@ -12,9 +12,9 @@
         <script>
           $(document).ready(function(){
             $("#my-timeline").timeline({
-              width: '90%',
+              width: '100%',
               dayWidth: 10,
-              showDetail: 'click'
+              showDetail: 'always'
             });
             
             $(window).resize(function(){
@@ -26,7 +26,9 @@
     <body>
         <div class="container">
             <h2>jQuery rzTimeline Demo</h2>
-            <div id="my-timeline"></div>
+            <div id="responsive">
+	            <div id="my-timeline"></div>
+            </div>
             <div id="todo">
               <h6>Todo list ( green means fixed )</h6>
               <ol>

@@ -25,3 +25,14 @@ html, body {
   color: green;
   text-decoration:line-through;
 }
+
+@media (min-width: 980px) {
+    #responsive {
+    	width: 800px;
+    }
+}
+@media (min-width: 768px) and (max-width: 979px) {
+    #responsive {
+    	width: 600px;
+    }
+}
