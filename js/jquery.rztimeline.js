@@ -84,7 +84,7 @@
         $this.startDateTime = $this.startDate.getTime();
         $this.endDateTime = $this.endDate.getTime();
         $this.fullWidth = ( $this.endDate - $this.startDate ) / 86400000 * opts.dayWidth;
-        $this.screenDays = Math.ceil($this.screenWidth / opts.dayWidth);
+        $this.screenDays = Math.ceil($this.screenWidth / opts.dayWidth / 2) * 2;
         $this.paddingDays = 2 * $this.screenDays;
         if (opts.dayWidth > 10) {
             $this.paddingDays = 2 * $this.screenDays;
@@ -97,7 +97,7 @@
         $this.totalWidth = $this.fullWidth + 2 * $this.paddingWidth;
         
         // Initial screen variables.
-        $this.screenStartDate = new Date($this.startDate - $this.screenDays / 2 * 86400000);
+        $this.screenStartDate = new Date($this.startDate.getTime() - $this.screenDays / 2 * 86400000);
         $this.screenStartDateTime = $this.screenStartDate.getTime();
         $this.screenEndDateTime = $this.screenStartDateTime + 86400000 * $this.screenDays;
         $this.screenEndDate = new Date($this.screenEndDateTime);
@@ -105,6 +105,7 @@
         $this.updateScreenDate = function() {
             var scalePosition = parseInt(tl_timescale.css('left'));
             $this.screenStartDate = $this.calDateFromPixel(-scalePosition);
+            $this.screenStartDate.setHours(0, 0, 0, 0);
             $this.screenStartDateTime = $this.screenStartDate.getTime();
             $this.screenEndDateTime = $this.screenStartDateTime + 86400000 * $this.screenDays;
             $this.screenEndDate = new Date($this.screenEndDateTime);
@@ -305,7 +306,6 @@
         $this.drawTimeAxis = function() {
             // var pointDateTime = $this.totalStartDateTime;
             var pointDateTime = $this.screenStartDateTime - 86400000 * $this.paddingDays;
-            
             tl_timeaxis.html('');
 
             // while (pointDateTime <= $this.totalEndDateTime) {
@@ -338,7 +338,7 @@
                 
                 var num_of_date_axis_in_one_month = 1;
                 if (opts.dayWidth >= 8) {
-                    num_of_date_axis_in_one_month = daysInMonth(currentPointDate.getMonth() + 1, currentPointDate.getFullYear());
+                    num_of_date_axis_in_one_month = daysInMonth(currentPointDate.getMonth(), currentPointDate.getFullYear());
                 } else if (opts.dayWidth >= 4) {
                     num_of_date_axis_in_one_month = 10;
                 } else if (opts.dayWidth >= 1) {
@@ -388,7 +388,7 @@
             }
             
             $.ajax({
-                url : 'server/fix.fixture.php',
+                url : 'server/fixture.php',
                 type : 'GET',
                 data : {
                     start : fetchStartDateString,
@@ -520,7 +520,7 @@
     	var $this = $timeline;
     	// Cache variables.
         $this.screenWidth = $this.width();
-        $this.screenDays = Math.ceil($this.screenWidth / $this.opts.dayWidth);
+        $this.screenDays = Math.ceil($this.screenWidth / $this.opts.dayWidth / 2) * 2;
         $this.paddingDays = $this.screenDays;
         if ($this.opts.dayWidth > 10) {
             $this.paddingDays = 2 * $this.screenDays;

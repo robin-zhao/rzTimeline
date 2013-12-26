@@ -68,8 +68,6 @@
   cursor:pointer;
   float: left;
   position: absolute;
-  width: 153px;
-  height: 53px;
   border-top-right-radius:3px;
   border-bottom-right-radius:3px;
   color: #666;
@@ -119,6 +117,21 @@
 .tl-timescale-container:hover .line {
   background-color: #A90B0B;
 }
+.tl-timescale-container .dot {
+  background-color: #999;
+  position:absolute;
+  top:144px;
+  left:-2.5px;
+  width:6px;
+  height:6px;
+  border-radius:3px;
+  z-index:21;
+  opacity:0.5;
+}
+.tl-timescale-container.current .dot, .tl-timescale-container:hover .dot {
+  background-color: #c00;
+  opacity:0.7;
+}
 
 .tl-timescale-container .scale-thumbnail {
   float: left;
@@ -134,15 +147,15 @@
   padding-top: 2px;
 }
 
-.timescale-row-0 {
+.timescale-row-0 .flag {
   top: 1px;
 }
 
-.timescale-row-1 {
+.timescale-row-1 .flag {
   top: 50px;
 }
 
-.timescale-row-2 {
+.timescale-row-2 .flag{
   top: 100px;
 }
 
