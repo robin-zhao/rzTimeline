@@ -162,11 +162,11 @@
 .scale {
   height: 4px;
   width: 1px;
-  background: #666;
+  background: #bbb;
   position: absolute;
   font-size: 0px;
 }
-.scale .label-month {
+.scale .label-date {
     position: absolute;
     top:12px;
     left:-24px;
@@ -174,35 +174,30 @@
     text-align:center;
     height: auto;
     font-size: 10px;
+    color: #666;
 }
-.scale .label-year {
+.scale .label-month {
+	color: #333;
     position: absolute;
-    top:24px;
-    left:-12px;
-    width: auto;
+    top:28px;
+    left:-40px;
+    width: 80px;
+    text-align:center;
     height: auto;
     font-size: 10px;
     font-weight: bold;
 }
+.scale-date-block {
+  height: 4px;
+}
 .scale-date {
   height: 6px;
 }
-.scale-month {
+.scale-date-with-label {
   height: 10px;
-  background: #333;
-  width:2px;
-  margin-left:-1px;
 }
-.scale-year {
-  height: 14px;
-  width:2px;
-  margin-left:-1px;
-}
-
-.scale-decade span {
-  position: absolute;
-  left: -12px;
-  top: 12px;
+.scale-month {
+  height: 24px;
 }
 
 .tl-footer {

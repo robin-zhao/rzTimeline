@@ -7,7 +7,7 @@
 
 (function ( $, document, window ) {
     var monthNames = [ "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" ],
-        monthShortNames = [ "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" ],
+        monthShortNames = [ "Jan", "Feb", "Mar", "Apr", "May", "June", "July", "Aug", "Sept", "Oct", "Nov", "Dec" ],
         $timeline,
         publicMethod;
         
@@ -78,7 +78,6 @@
         
         // Cache variables.
         $this.screenWidth = $this.width();
-        console.log($this.screenWidth);
         $this.startDate = parseISO8601(opts.startDate);
         $this.endDate = parseISO8601(opts.endDate);
         $this.startDateTime = $this.startDate.getTime();
@@ -311,56 +310,52 @@
             // while (pointDateTime <= $this.totalEndDateTime) {
             while (pointDateTime <= ($this.screenEndDateTime + 86400000 * $this.paddingDays)) {
                 var pointDate = new Date(pointDateTime);
-                pointDate.setDate(1);
+                // pointDate.setDate(1);
                 var currentPointDate = pointDate;
                 var monthString = monthShortNames[pointDate.getMonth()];
                 var dateString = pointDate.getDate();
                 
                 var position = $this.calPixelFromDate(pointDate);
                 
-                var month_scale = $('<div class="scale scale-month"></div>');
-                month_scale.append('<div class="label-month">' + monthString + ' ' + dateString + '</div>');
-                month_scale.css({
+                var dateScale = $('<div class="scale scale-date"></div>');
+                dateScale.css({
                     left : position + 'px'
                 });
                 
-                if (pointDate.getMonth() == 0) {
-                    month_scale.removeClass('scale-month').addClass('scale-year');
-                    label_year = $('<div class="label-year">' + pointDate.getFullYear() + '</div>');
-                    month_scale.append(label_year);
+                if ( ((pointDateTime - $this.totalStartDateTime) / 86400000) % 4 == 0) {
+                	dateScale.removeClass('scale-date').addClass('scale-date-with-label');
+	                dateScale.append('<div class="label-date">' + monthString + '. ' + dateString + '</div>');
+                }
+                
+                if(pointDate.getDate() == 1) {
+                	dateScale.find('.label-date').remove();
+	                dateScale.removeClass('scale-date').addClass('scale-month').append('<div class="label-month">' + monthString.toUpperCase() + '. ' + pointDate.getFullYear() + '</div>');
                 }
                 
                 // Loop finish, goto next month
-                pointDate.setMonth(pointDate.getMonth() + 1);
+                pointDate.setDate(pointDate.getDate() + 1);
                 pointDateTime = pointDate.getTime();
                 
-                // Draw date axis (Will be slow if the period is longer than 100 years).
-                var nextMonthPosition = $this.calPixelFromDate(pointDate);
+                var nextDayPosition = $this.calPixelFromDate(pointDate);
                 
-                var num_of_date_axis_in_one_month = 1;
-                if (opts.dayWidth >= 8) {
-                    num_of_date_axis_in_one_month = daysInMonth(currentPointDate.getMonth(), currentPointDate.getFullYear());
-                } else if (opts.dayWidth >= 4) {
-                    num_of_date_axis_in_one_month = 10;
-                } else if (opts.dayWidth >= 1) {
-                    num_of_date_axis_in_one_month = 4;
-                } else if (opts.dayWidth >= 0.6) {
-                    num_of_date_axis_in_one_month = 3;
-                } else if (opts.dayWidth >= 0.1) {
-                    num_of_date_axis_in_one_month = 2;
+                var dayBlocks = 1;
+                if (opts.dayWidth >= 20) {
+                    dayBlocks = 4;
+                } else if (opts.dayWidth >= 10) {
+                    dayBlocks = 2;
                 } else {
-                    num_of_date_axis_in_one_month = 1;
+                    dayBlocks = 1;
                 }
-                for (var j = 0; j < num_of_date_axis_in_one_month - 1; j++) {
-                    var date_scale = $('<div class="scale scale-date"></div>');
-                    date_scale.css({
-                        left : position + (nextMonthPosition - position) * (j + 1) / num_of_date_axis_in_one_month + 'px'
+                for (var j = 0; j < dayBlocks - 1; j++) {
+                    var dateBlockScale = $('<div class="scale scale-date-block"></div>');
+                    dateBlockScale.css({
+                        left : position + (nextDayPosition - position) * (j + 1) / dayBlocks + 'px'
                     });
 
-                    tl_timeaxis.append(date_scale);
+                    tl_timeaxis.append(dateBlockScale);
                 }
 
-                tl_timeaxis.append(month_scale);
+                tl_timeaxis.append(dateScale);
             }
         };
         
