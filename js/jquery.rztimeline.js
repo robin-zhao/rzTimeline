@@ -322,7 +322,16 @@
                     left : position + 'px'
                 });
                 
-                if ( ((pointDateTime - $this.totalStartDateTime) / 86400000) % 4 == 0) {
+                var labelDays = 4;
+                if (opts.dayWidth >= 20) {
+                    labelDays = 4;
+                } else if (opts.dayWidth >= 10) {
+                    labelDays = 8;
+                } else {
+                    labelDays = 15;
+                }
+                
+                if ( ((pointDateTime - $this.totalStartDateTime) / 86400000) % labelDays == 0) {
                 	dateScale.removeClass('scale-date').addClass('scale-date-with-label');
 	                dateScale.append('<div class="label-date">' + monthString + '. ' + dateString + '</div>');
                 }
