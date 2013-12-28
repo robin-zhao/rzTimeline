@@ -393,7 +393,7 @@
             }
             
             $.ajax({
-                url : 'server/fix.fixture.php',
+                url : opts.source,
                 type : 'GET',
                 data : {
                     start : fetchStartDateString,
