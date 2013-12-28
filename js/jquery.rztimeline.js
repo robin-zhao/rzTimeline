@@ -577,6 +577,7 @@
     
     // Plugin defaults
     $.fn.timeline.defaults = {
+        source: "server/fix.fixture.php",
         width: "600",
         startDate:'1906-01-13',
         endDate:'2001-11-05',
