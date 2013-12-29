@@ -19,6 +19,15 @@
     function daysInMonth(month, year) {
         return new Date(year, month, 0).getDate();
     }
+    
+    //untag html
+    function untagify(text) {
+        if (!text) {
+            return text;
+        }
+        text = text.replace(/<\/?\s*\w.*?>/g,"");
+        return text;
+    }
 
     /**
      * Parses string formatted as YYYY-MM-DD to a Date object.
@@ -122,6 +131,16 @@
             var date = parseISO8601(dateString);
             return $this.calPixelFromDate(date);
         };
+        
+        $this.sortByTimestamp = function(a, b) {
+            if (a.timestamp < b.timestamp) {
+                return -1;
+            }
+            if (a.timestamp > b.timestamp) {
+                return 1;
+            }
+            return 0;
+        };
 
         // Add skeleton HTML.
         var container = $('<div class="rztimeline-container"></div>');
@@ -197,12 +216,12 @@
                 var left = that.calPixelFromDateString(n.date);
                 var key = $('.tl-timescale-container').length;
                 var timescale_row = key % 3;
-                var tl_timescale_container = $('<div rel= "' + n.date + '" class="tl-timescale-container timescale-row-' + timescale_row + '" title="' + n.title + '" key="' + key + '"></div>');
-                var content = n.title + ', ' + monthNames[parseISO8601(n.date).getMonth()] + ' ' + parseISO8601(n.date).getDate() + ', ' + parseISO8601(n.date).getFullYear();
+                var tl_timescale_container = $('<div rel= "' + n.date + '" class="tl-timescale-container timescale-row-' + timescale_row + '" title="' + untagify(n.title) + '" key="' + key + '"></div>');
+                var content = untagify(n.title) + ', ' + monthNames[parseISO8601(n.date).getMonth()] + ' ' + parseISO8601(n.date).getDate() + ', ' + parseISO8601(n.date).getFullYear();
                 
                 var flag = $('<div class="flag"></div>');
                 flag.append('<div class="scale-thumbnail"><img src="' + n.thumbnail_small + '" /></div>');
-                flag.append('<div class="scale-content" title="' + n.title + '">' + content + '</div>');
+                flag.append('<div class="scale-content" title="' + untagify(n.title) + '">' + content + '</div>');
                 tl_timescale_container.append(flag);
                 tl_timescale_container.append('<div class="line"></div>');
                 tl_timescale_container.append('<div class="dot"></div>');
@@ -379,8 +398,8 @@
             var fetchStartDate = new Date($this.screenStartDateTime - fetchBufferDays * 86400000);
             var fetchEndDate = new Date($this.screenEndDateTime + fetchBufferDays * 86400000);
             
-            var fetchStartDateString = fetchStartDate.getFullYear() + '-' + (fetchStartDate.getMonth() + 1) + '-' + fetchStartDate.getDate();
-            var fetchEndDateString = fetchEndDate.getFullYear() + '-' + (fetchEndDate.getMonth() + 1) + '-' + fetchEndDate.getDate();
+            var fetchStartDateString = fetchStartDate.getFullYear() + '-' + ('0' + (fetchStartDate.getMonth() + 1)).slice(-2) + '-' + ('0' + fetchStartDate.getDate()).slice(-2);
+            var fetchEndDateString = fetchEndDate.getFullYear() + '-' + ('0' + (fetchEndDate.getMonth() + 1)).slice(-2) + '-' + ('0' + fetchEndDate.getDate()).slice(-2);
             
             $this.drawTimeAxis();
             
@@ -419,6 +438,8 @@
                         loadedDate.push(n.date);
                     }
                 });
+                
+                newData.sort(that.sortByTimestamp);
                 
                 that.data = $.merge(that.data, newData);
                 
