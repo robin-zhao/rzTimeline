@@ -1,16 +1,16 @@
 .rztimeline-container {
-  border: 1px solid #999;
-  overflow-y: hidden;
-  overflow: hidden;
-  position: relative;
+    border: 1px solid #999;
+    overflow-y: hidden;
+    overflow: hidden;
+    position: relative;
 }
 
 #tl-body {
-  height: 180px;
-  box-shadow: 1px 1px 7px rgba(0,0,0,0.3);
-  z-index: 9999;
-  position: relative;
-  overflow: hidden;
+    height: 180px;
+    box-shadow: 1px 1px 7px rgba(0,0,0,0.3);
+    z-index: 9999;
+    position: relative;
+    overflow: hidden;
 }
 
 .tl-scalebox {
@@ -19,185 +19,185 @@
 }
 
 #tl-middle-line {
-  z-index: 9997;
-  left: 50%;
-  background: #a36;
-  height: 152px;
-  width: 1px;
-  position: absolute;
-  top: -1px;
-  box-shadow:0 1px 2px #a36;
-  opacity: 0.75;
+    z-index: 9997;
+    left: 50%;
+    background: #a36;
+    height: 152px;
+    width: 1px;
+    position: absolute;
+    top: -1px;
+    box-shadow: 0 1px 2px #a36;
+    opacity: 0.75;
 }
 
 .tl-indicator {
-  z-index: 9999;
-  top: 0px;
-  left: 50%;
-  margin-left: -11px;
-  background: url(../images/scaleband_indicator.png) 0 0 no-repeat;
-  height: 24px;
-  width: 24px;
-  position: absolute;
+    z-index: 9999;
+    top: 0px;
+    left: 50%;
+    margin-left: -11px;
+    background: url(../images/scaleband_indicator.png) 0 0 no-repeat;
+    height: 24px;
+    width: 24px;
+    position: absolute;
 }
 
 #tl-timescale {
-  height: 200px;
-  cursor: col-resize;
+    height: 200px;
+    cursor: col-resize;
 }
 
 #tl-timescale .tl-scaleband {
-  height: 150px;
-  position: relative;
-  background: #e9e9e9;
-  overflow: hidden;
-  z-index: 999;
+    height: 150px;
+    position: relative;
+    background: #e9e9e9;
+    overflow: hidden;
+    z-index: 999;
 }
 
 #tl-timescale .tl-timeaxis {
-  height: 50px;
-  background-color: #fff;
-  z-index:1000;
-  position:absolute;
-  top:151px;
-  box-shadow: -1px -1px 7px rgba(0,0,0,0.1);
-  width:100%;
+    height: 50px;
+    background-color: #fff;
+    z-index: 1000;
+    position: absolute;
+    top: 151px;
+    box-shadow: -1px -1px 7px rgba(0,0,0,0.1);
+    width: 100%;
 }
 
 .tl-timescale-container {
-  cursor:pointer;
-  float: left;
-  position: absolute;
-  border-top-right-radius:3px;
-  border-bottom-right-radius:3px;
-  color: #666;
+    cursor: pointer;
+    float: left;
+    position: absolute;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 3px;
+    color: #666;
 }
 
 .tl-timescale-container.current {
-  z-index: 26;
-  color: #333;
+    z-index: 26;
+    color: #333;
 }
 
-.tl-timescale-container.current .flag{
-  background-position:0 -53px;
+.tl-timescale-container.current .flag {
+    background-position: 0 -53px;
 }
 
 .tl-timescale-container:hover {
-  z-index: 27;
-  color: #333;
+    z-index: 27;
+    color: #333;
 }
 
 .tl-timescale-container .flag {
-  position: absolute;
-  width: 153px;
-  height: 53px;
-  padding: 0;
-  display: block;
-  z-index: 23;
-  background: url(../images/timescale_bg.png) 0 0 no-repeat;
+    position: absolute;
+    width: 153px;
+    height: 53px;
+    padding: 0;
+    display: block;
+    z-index: 23;
+    background: url(../images/timescale_bg.png) 0 0 no-repeat;
 }
 .tl-timescale-container .flag:hover {
-  background-position:0 -53px;
+    background-position: 0 -53px;
 }
 
 .tl-timescale-container .line {
-  position: absolute;
-  top: -100px;
-  left: 0px;
-  width: 1px;
-  height: 250px;
-  background-color: #ccc;
-  background-color: rgba(204,204,204,0.5);
-  -webkit-box-shadow: 1px 0 0 rgba(255,255,255,0.5);
-  -moz-box-shadow: 1px 0 0 rgba(255,255,255,0.5);
-  box-shadow: 1px 0 0 rgba(255,255,255,0.5);
-  z-index: 22;
+    position: absolute;
+    top: -100px;
+    left: 0px;
+    width: 1px;
+    height: 250px;
+    background-color: #ccc;
+    background-color: rgba(204,204,204,0.5);
+    -webkit-box-shadow: 1px 0 0 rgba(255,255,255,0.5);
+    -moz-box-shadow: 1px 0 0 rgba(255,255,255,0.5);
+    box-shadow: 1px 0 0 rgba(255,255,255,0.5);
+    z-index: 22;
 }
 
 .tl-timescale-container:hover .line {
-  background-color: #A90B0B;
+    background-color: #A90B0B;
 }
 .tl-timescale-container .dot {
-  background-color: #999;
-  position:absolute;
-  top:144px;
-  left:-2.5px;
-  width:6px;
-  height:6px;
-  border-radius:3px;
-  z-index:21;
-  opacity:0.5;
+    background-color: #999;
+    position: absolute;
+    top: 144px;
+    left: -2.5px;
+    width: 6px;
+    height: 6px;
+    border-radius: 3px;
+    z-index: 21;
+    opacity: 0.5;
 }
 .tl-timescale-container.current .dot, .tl-timescale-container:hover .dot {
-  background-color: #c00;
-  opacity:0.7;
+    background-color: #c00;
+    opacity: 0.7;
 }
 
 .tl-timescale-container .scale-thumbnail {
-  float: left;
-  width: 22px;
-  padding-left: 3px;
-  padding-top:3px;
+    float: left;
+    width: 22px;
+    padding-left: 3px;
+    padding-top: 3px;
 }
 
 .tl-timescale-container .scale-content {
-  float: left;
-  width: 126px;
-  padding-left:2px;
-  padding-top: 2px;
+    float: left;
+    width: 126px;
+    padding-left: 2px;
+    padding-top: 2px;
 }
 
 .timescale-row-0 .flag {
-  top: 1px;
+    top: 1px;
 }
 
 .timescale-row-1 .flag {
-  top: 50px;
+    top: 50px;
 }
 
-.timescale-row-2 .flag{
-  top: 100px;
+.timescale-row-2 .flag {
+    top: 100px;
 }
 
 .scale {
-  height: 4px;
-  width: 1px;
-  background: #bbb;
-  position: absolute;
-  font-size: 0px;
+    height: 4px;
+    width: 1px;
+    background: #bbb;
+    position: absolute;
+    font-size: 0px;
 }
 .scale .label-date {
     position: absolute;
-    top:12px;
-    left:-24px;
+    top: 12px;
+    left: -24px;
     width: 48px;
-    text-align:center;
+    text-align: center;
     height: auto;
     font-size: 10px;
     color: #666;
 }
 .scale .label-month {
-	color: #333;
+    color: #333;
     position: absolute;
-    top:28px;
-    left:-40px;
+    top: 28px;
+    left: -40px;
     width: 80px;
-    text-align:center;
+    text-align: center;
     height: auto;
     font-size: 10px;
     font-weight: bold;
 }
 .scale-date-block {
-  height: 4px;
+    height: 4px;
 }
 .scale-date {
-  height: 6px;
+    height: 6px;
 }
 .scale-date-with-label {
-  height: 10px;
+    height: 10px;
 }
 .scale-month {
-  height: 24px;
+    height: 24px;
 }
 
 .tl-footer {
@@ -207,133 +207,134 @@
 }
 
 .tl-sliderflaglabel {
-  top:-21px;
-  text-align:center;
-  margin-left:-12px;
-  width:40px;
-  background: url(../images/timeline_flag.png) 0 0 no-repeat;
-  height:20px;
-  line-height:16px; 
-  color:#FFF;
-  position:absolute;
+    top: -21px;
+    text-align: center;
+    margin-left: -12px;
+    width: 40px;
+    background: url(../images/timeline_flag.png) 0 0 no-repeat;
+    height: 20px;
+    line-height: 16px;
+    color: #FFF;
+    position: absolute;
 }
 
-.tl-slider .ui-slider-handle:focus{
+.tl-slider .ui-slider-handle:focus {
     outline: none;
 }
 
 #arrow-left, #arrow-right {
-  height: 180px;
-  width: 50px;
-  border: 1px red solid;
-  float: left;
+    height: 180px;
+    width: 50px;
+    border: 1px red solid;
+    float: left;
 }
 
 .tl-body-container {
-  padding: 0 36px;
-  height: 180px;
+    background: #fff;
+    padding: 0 36px;
+    height: 180px;
 }
 
 .tl-body-content {
     height: 100%;
     width: 100%;
-  padding: 10px;
-  display: none;
-  position: absolute;
-  top: 0px;
-  left: 36px;
-  background: #FFF;
-  z-index: 99;
+    padding: 10px;
+    display: none;
+    position: absolute;
+    top: 0px;
+    left: 36px;
+    background: #FFF;
+    z-index: 99;
 }
 
 .timeline-box .btn-prev, .timeline-box .btn-next {
-  width: 19px;
-  height: 140px;
-  background: #F00;
-  position: absolute;
-  cursor: pointer;
-  top: 20px;
-  z-index: 999;
+    width: 19px;
+    height: 140px;
+    background: #F00;
+    position: absolute;
+    cursor: pointer;
+    top: 20px;
+    z-index: 999;
 }
 
 .timeline-box {
-  font-family: Arial, Helvetica, Verdana, sans-serif;
+    font-family: Arial, Helvetica, Verdana, sans-serif;
 }
 
-.timeline-box .msg-box{
-  position: absolute;
-  z-index:100;
-  bottom: 0;
-  width: 100%;
-  height:16px;
-  display: none;
-  text-align:center;
-  color:#666;
+.timeline-box .msg-box {
+    position: absolute;
+    z-index: 100;
+    bottom: 0;
+    width: 100%;
+    height: 16px;
+    display: none;
+    text-align: center;
+    color: #666;
 }
 
 .timeline-box .btn-prev {
-  background: url(../images/previous.png) top left no-repeat;
-  left: 6px;
+    background: url(../images/previous.png) top left no-repeat;
+    left: 6px;
 }
 
 .timeline-box .btn-prev, .timeline-box .btn-next {
-	-webkit-touch-callout: none;
-	-webkit-user-select: none;
-	-khtml-user-select: none;
-	-moz-user-select: none;
-	-ms-user-select: none;
-	user-select: none;
+    -webkit-touch-callout: none;
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
 }
 
 .timeline-box .btn-prev:hover {
-  background: url(../images/previous_hover.png) top left no-repeat;
+    background: url(../images/previous_hover.png) top left no-repeat;
 }
 
 .timeline-box .btn-next {
-  background: url(../images/next.png) top left no-repeat;
-  right: 6px;
+    background: url(../images/next.png) top left no-repeat;
+    right: 6px;
 }
 
 .timeline-box .btn-next:hover {
-  background: url(../images/next_hover.png) top left no-repeat;
+    background: url(../images/next_hover.png) top left no-repeat;
 }
 
 .timeline-box .tl-body-content-thumbnail {
-  margin-top: 20px;
-  float: left;
-  font-size: 0px;
-  width: 100px;
-  border: 1px solid #EEE;
+    margin-top: 20px;
+    float: left;
+    font-size: 0px;
+    width: 100px;
+    border: 1px solid #EEE;
 }
 
 .timeline-box .tl-body-content-right-col {
-  float: left;
-  padding-left:10px;
+    float: left;
+    padding-left: 10px;
 }
 
 .timeline-box .tl-body-content-date {
-  font-size: 11px;
-  color: #999;
+    font-size: 11px;
+    color: #999;
 }
 .timeline-box .tl-body-content-title {
-  padding: 5px 0;
-  font-size: 16px;
-  line-height: 16px;
+    padding: 5px 0;
+    font-size: 16px;
+    line-height: 16px;
 }
 
 .timeline-box .tl-body-content-title a {
-  line-height: 24px;
-  border-bottom: 1px solid #a3bcde;
-  color: #36B;
-  text-decoration: none;
+    line-height: 24px;
+    border-bottom: 1px solid #a3bcde;
+    color: #36B;
+    text-decoration: none;
 }
 
 .timeline-box .tl-body-content-desc {
-  font-size: 12px;
-  color: #333;
+    font-size: 12px;
+    color: #333;
 }
 
 .timeline-box .tl-body-content-thumbnail img {
-  width: 100px;
-  height: 75px;
+    width: 100px;
+    height: 75px;
 }
