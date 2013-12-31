@@ -11,8 +11,12 @@ html, body {
 }
 
 #my-timeline {
-    box-shadow: 0 0 3px #999;
     margin-right:10px;
+}
+
+#my-timeline .rztimeline-container {
+    border-radius:2px;
+    box-shadow: 0 0 3px #999;
 }
 
 #todo {
