@@ -234,8 +234,33 @@
         
         // Focus to a scale
         $this.focusScale = function(key) {
-            $(".tl-timescale-container").removeClass('current');
-            $(".tl-timescale-container[key="+key+"]").addClass('current');
+            var max_key = $this.getKeyCount() - 1;
+            if (key < 0 || key > max_key) {
+                ;
+            }
+            else {
+                $(".tl-timescale-container").removeClass('current');
+                $(".tl-timescale-container[key="+key+"]").addClass('current');
+                
+                // Pagination in same date.
+                var currentScale = $(".tl-timescale-container[key="+key+"]");
+                var currentScaleDate = currentScale.attr('rel');
+                var scaleInDate = $(".tl-timescale-container[rel="+currentScaleDate+"]").length;
+                var scaleIndex = currentScale.index(".tl-timescale-container[rel="+currentScaleDate+"]");
+                
+                if (scaleInDate > 3) {
+                    var pageStart = scaleIndex - scaleIndex % 3;
+                    $(".tl-timescale-container[rel="+currentScaleDate+"]").css('z-index', '');
+                    
+                    $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(pageStart).css('z-index', '25');
+                    $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(pageStart+1).css('z-index', '25');
+                    $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(pageStart+2).css('z-index', '25');
+                    
+                    console.log(pageStart);
+                    
+                    $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(scaleIndex).css('z-index', '26');
+                }
+            }
         };
         
         // Focus to a specific time point, provied by key value.
@@ -428,6 +453,7 @@
                 
                 $('.msg-box').html('').fadeOut();
                 var newData = [];
+                var newLoadedDate = [];
                 $.each(data, function(i, n) {
                     if( -1 !== $.inArray(n.date, loadedDate) ) {
                         return;
@@ -435,9 +461,11 @@
                     var dateDate = parseISO8601(n.date);
                     if (dateDate >= $this.startDate && dateDate <= $this.endDate) {
                         newData.push(n);
-                        loadedDate.push(n.date);
+                        newLoadedDate.push(n.date);
                     }
                 });
+                
+                loadedDate = $.merge(loadedDate, newLoadedDate);
                 
                 newData.sort(that.sortByTimestamp);
                 
