@@ -248,9 +248,9 @@
                 var scaleInDate = $(".tl-timescale-container[rel="+currentScaleDate+"]").length;
                 var scaleIndex = currentScale.index(".tl-timescale-container[rel="+currentScaleDate+"]");
                 
+                $(".tl-timescale-container").css('z-index', '');
                 if (scaleInDate > 3) {
                     var pageStart = scaleIndex - scaleIndex % 3;
-                    $(".tl-timescale-container[rel="+currentScaleDate+"]").css('z-index', '');
                     
                     $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(pageStart).css('z-index', '25');
                     $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(pageStart+1).css('z-index', '25');
