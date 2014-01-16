@@ -120,11 +120,11 @@
         };
         
         $this.calPixelFromDate = function( date ) {
-            return (date - $this.startDate) / 86400000 * opts.dayWidth + $this.paddingWidth;
+            return (date - $this.startDate) / 86400000 * $this.opts.dayWidth + $this.paddingWidth;
         };
         
         $this.calDateFromPixel = function( pixel ) {
-            return new Date($this.startDate.getTime() + (pixel - $this.paddingWidth) / opts.dayWidth * 86400000);
+            return new Date($this.startDate.getTime() + (pixel - $this.paddingWidth) / $this.opts.dayWidth * 86400000);
         };
         
         $this.calPixelFromDateString = function( dateString ) {
@@ -256,15 +256,13 @@
                     $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(pageStart+1).css('z-index', '25');
                     $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(pageStart+2).css('z-index', '25');
                     
-                    console.log(pageStart);
-                    
                     $(".tl-timescale-container[rel="+currentScaleDate+"]").eq(scaleIndex).css('z-index', '26');
                 }
             }
         };
         
         // Focus to a specific time point, provied by key value.
-        $this.focusContent = function(key, direction) {
+        $this.focusContent = function(key, direction, noScroll) {
             var max_key = $this.getKeyCount() - 1;
             if (key < 0 || key > max_key) {
                 ;
@@ -283,9 +281,11 @@
                 var targetDateString = $('.tl-timescale-container[key="' + key + '"]').attr('rel');
                 var targetDate = parseISO8601(targetDateString);
                 // adjust timescale.
-                publicMethod.scrollToDate(targetDate, false, function(){
-                    $this.updateSliderPosition();
-                });
+                if (!noScroll) {
+                    publicMethod.scrollToDate(targetDate, false, function(){
+                        $this.updateSliderPosition();
+                    });
+                }
 
                 // Show current time point detail in top area.
                 if (direction == 'right') {
@@ -570,10 +570,52 @@
         tlSlider.find('.ui-slider-handle').append(tlSliderFlagLabel);
     };
     
+    publicMethod.getCenterDate = function() {
+        var $this = $timeline;
+        var scalePosition = parseInt($this.timeScale.css('left'));
+        var screenCenterDate = $this.calDateFromPixel(-scalePosition + $this.screenWidth / 2);
+        // screenCenterDate.setHours(0, 0, 0, 0);
+        console.log(screenCenterDate);
+    };
+    
+    publicMethod.zoomIn = function() {
+        var $this = $timeline;
+        
+        var scalePosition = parseInt($this.timeScale.css('left'));
+        var screenCenterDate = $this.calDateFromPixel(-scalePosition + $this.screenWidth / 2);
+        
+        $this.opts.dayWidth = 1.25 * $this.opts.dayWidth;
+        
+        publicMethod.resize();
+        $this.focusScale($this.getCurrentKey());
+        $this.focusContent($this.getCurrentKey(), null, true);
+        publicMethod.scrollToDate(screenCenterDate, true);
+        
+        $this.drawTimeAxis();
+    };
+    
+    publicMethod.zoomOut = function() {
+        var $this = $timeline;
+        
+        var scalePosition = parseInt($this.timeScale.css('left'));
+        var screenCenterDate = $this.calDateFromPixel(-scalePosition + $this.screenWidth / 2);
+        
+        $this.opts.dayWidth = 0.8 * $this.opts.dayWidth;
+        
+        publicMethod.resize();
+        $this.focusScale($this.getCurrentKey());
+        $this.focusContent($this.getCurrentKey(), null, true);
+        publicMethod.scrollToDate(screenCenterDate, true);
+        
+        $this.drawTimeAxis();
+    };
+    
     publicMethod.resize = function() {
     	var $this = $timeline;
+    	
     	// Cache variables.
         $this.screenWidth = $this.width();
+        $this.fullWidth = ( $this.endDate - $this.startDate ) / 86400000 * $this.opts.dayWidth;
         $this.screenDays = Math.ceil($this.screenWidth / $this.opts.dayWidth / 2) * 2;
         $this.paddingDays = $this.screenDays;
         if ($this.opts.dayWidth > 10) {
