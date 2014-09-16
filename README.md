@@ -1,7 +1,7 @@
 rzTimeline
 ==========
 
-A jQuery timeline plugin supporting lazy loading. ( pre-alpha )
+A jQuery timeline plugin supporting lazy loading.
 
 Usage:
     $('#your-timeline').rztimeline();
