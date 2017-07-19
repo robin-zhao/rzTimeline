@@ -3,6 +3,9 @@ rzTimeline
 
 A jQuery timeline plugin supporting lazy loading.
 
+Demo:
+    https://blog.54zxy.com/timeline/
+
 Usage:
     $('#your-timeline').rztimeline();
 
